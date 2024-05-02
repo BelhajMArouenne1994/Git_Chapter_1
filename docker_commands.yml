@@ -9,7 +9,7 @@ docker exec -it nps-postgres psql -U root (ajouter le password, il arrive a se c
               2024-05-02 09:37:19.683377+00
               (1 row)
 
-            TO EXIT   root=# \q
+            TO EXIT   root=# exit
 
 
 
