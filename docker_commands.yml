@@ -30,3 +30,7 @@ migrate -path db/migrations -database "postgresql://root:secret@localhost:5432/n
 sqlc init       //le fichier sqlc.yaml est créé
 mettre a jour le fichier sqlc.yaml
 sqlc generate
+
+
+
+go mod init github.com/BelhajMArouenne1994/GIT_CHAPTER_1          // Creating go project
