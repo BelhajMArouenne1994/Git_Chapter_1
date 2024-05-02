@@ -22,5 +22,11 @@ Nous rontrons dans le conteneur pour creer une nouvelle DB
 docker exec -it nps-postgres /bin/sh
 createdb --username=root --owner=root nps-postgres 
 
-
 migrate -path db/migrations -database "postgresql://root:secret@localhost:5432/nps-postgres?sslmode=disable" -verbose up
+
+
+
+
+sqlc init       //le fichier sqlc.yaml est créé
+mettre a jour le fichier sqlc.yaml
+sqlc generate
