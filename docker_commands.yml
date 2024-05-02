@@ -1,0 +1,26 @@
+docker run --name nps-postgres -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:latest
+docker ps                                                   // list running containers                     
+docker images                                               // list docker images                         
+docker exec -it nps-postgres psql -U root (ajouter le password, il arrive a se connecter sans password car c'est en localhost)    //connect as root in the psql lanbguage in the container
+            // example
+              root=# select now();
+              now
+              -------------------------------
+              2024-05-02 09:37:19.683377+00
+              (1 row)
+
+            TO EXIT   root=# \q
+
+
+
+
+
+golang command to generate files need to migration via plsql
+migrate create -ext sql -dir db/migrations -seq init_schema
+
+Nous rontrons dans le conteneur pour creer une nouvelle DB 
+docker exec -it nps-postgres /bin/sh
+createdb --username=root --owner=root nps-postgres 
+
+
+migrate -path db/migrations -database "postgresql://root:secret@localhost:5432/nps-postgres?sslmode=disable" -verbose up

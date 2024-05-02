@@ -1,0 +1,92 @@
+Project NPS_Marouenne {
+  database_type: 'PostgreSQL'
+  Note: 'Description of the project'
+}
+
+
+Table recipient as r {
+    ocdMasterId                 varchar(255)    [not null, unique, primary key]
+        username    varchar
+        role        varchar
+        created_at  timestamp   [default: `now()`]                    
+}   
+
+
+Table surveyUrl as sUrl {
+    brand                       varchar(64)     [not null]       
+    country                     varchar(3)      [not null]
+    ocdB2cSurveyUrlId           varchar(255)    [not null, unique, primary key]
+    technicalCreationDate       timestamp       [not null]
+    technicalLastUpdateDate     timestamp       [not null]
+
+    sourceName                  varchar(255)    [not null]
+    sourceSurveyId              varchar(255)    [not null]
+
+    surveyId                    varchar(255)    [not null]
+    scenario                    varchar(255)    [not null]
+    channel                     varchar(255)    [not null]
+    surveyLanguage              varchar(255)    [not null]
+
+    ocdMasterId                 varchar(255)    
+    relatedObjectName           varchar(255)        
+    relatedObjectId             varchar(255)    [unique]
+
+    url                         varchar(2048)
+}
+
+
+Table surveyResponse as sResponse{
+    brand                       varchar(64)     [not null]
+    country                     varchar(3)      [not null]    
+    ocdB2cSurveyResponseId      varchar(255)    [not null, unique, primary key]
+    ocdB2cSurveyUrlId           varchar(255)    [not null, unique]
+    ocdMasterId                 varchar(255)    [not null]
+    technicalCreationDate       timestamp       [not null]
+    technicalLastUpdateDate     timestamp       [not null]
+
+    sourceName                  varchar(255)    [not null]    
+
+    url                         varchar(2048)   
+    surveyId                    varchar(255)    [not null]
+    surveyStatus                varchar(255)    [not null]
+    Scenario                    varchar(255)    [not null]
+    Channel                     varchar(255)    [not null]
+
+    relatedObjectName           varchar(255)
+    relatedObjectId             varchar(255)    [not null, unique]
+    answerDate                  timestamp
+    endDate                     timestamp       [not null]
+
+    npsSegmentation             varchar(255)
+}
+
+
+Table salesHistory as sHistory {
+    brand                       varchar
+    country                     varchar
+    ocdTicketId                 varchar         [not null, unique, primary key]
+    technicalCreationDate       timestamp
+    technicalLastUpdateDate     timestamp
+
+    source                      varchar
+    sourceName                  varchar
+    sourceChannel               varchar
+    sourcePersonId              varchar
+    sourceTicketNumber          varchar
+    sourceStoreType             varchar
+    sourceStatusOrder           varchar
+
+    ocdContactMasterId          varchar
+    ocdContactVersionId         varchar
+    ocdStoreId                  varchar
+}   
+
+
+Ref: sUrl.ocdB2cSurveyUrlId - sResponse.ocdB2cSurveyUrlId       // one-to-one
+Ref: sUrl.relatedObjectId - sHistory.ocdTicketId
+Ref: sResponse.relatedObjectId - sHistory.ocdTicketId
+
+
+Ref: sUrl.ocdMasterId > r.ocdMasterId                  // many-to-one
+Ref: sResponse.ocdMasterId > r.ocdMasterId
+Ref: sHistory.ocdContactMasterId > r.ocdMasterId
