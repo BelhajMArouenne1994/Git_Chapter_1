@@ -34,3 +34,4 @@ sqlc generate
 
 
 go mod init github.com/BelhajMArouenne1994/GIT_CHAPTER_1          // Creating go project
+go mod tidy                                                        // Installing go dependencies
