@@ -19,6 +19,7 @@ func TestNpsCreationTx(t *testing.T) {
 	errs := make(chan error)
 	results := make(chan NpsCreationTxResult)
 
+	// Create recipients
 	for i:=0 ; i < 10; i++ {
 		argRecipient := CreateRecipientParams{
 			OcdMasterId: uuid.New().String(),
@@ -45,7 +46,7 @@ func TestNpsCreationTx(t *testing.T) {
 		require.NotEmpty(t, results.Recipient)
 	}
 
-
+	//Create saleshistory
 
 }
 

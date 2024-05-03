@@ -62,14 +62,12 @@ CREATE TABLE "salesHistory" (
   "ocdStoreId" varchar
 );
 
-ALTER TABLE "surveyResponse" ADD FOREIGN KEY ("ocdB2cSurveyUrlId") REFERENCES "surveyUrl" ("ocdB2cSurveyUrlId");
-
-ALTER TABLE "salesHistory" ADD FOREIGN KEY ("ocdTicketId") REFERENCES "surveyUrl" ("relatedObjectId");
-
-ALTER TABLE "salesHistory" ADD FOREIGN KEY ("ocdTicketId") REFERENCES "surveyResponse" ("relatedObjectId");
-
-ALTER TABLE "surveyUrl" ADD FOREIGN KEY ("ocdMasterId") REFERENCES "recipient" ("ocdMasterId");
-
-ALTER TABLE "surveyResponse" ADD FOREIGN KEY ("ocdMasterId") REFERENCES "recipient" ("ocdMasterId");
 
 ALTER TABLE "salesHistory" ADD FOREIGN KEY ("ocdContactMasterId") REFERENCES "recipient" ("ocdMasterId");
+
+ALTER TABLE "surveyUrl" ADD FOREIGN KEY ("ocdMasterId") REFERENCES "recipient" ("ocdMasterId");
+ALTER TABLE "surveyUrl" ADD FOREIGN KEY ("relatedObjectId") REFERENCES "salesHistory" ("ocdTicketId");
+
+ALTER TABLE "surveyResponse" ADD FOREIGN KEY ("ocdMasterId") REFERENCES "recipient" ("ocdMasterId");
+ALTER TABLE "surveyResponse" ADD FOREIGN KEY ("relatedObjectId") REFERENCES "salesHistory" ("ocdTicketId");
+ALTER TABLE "surveyResponse" ADD FOREIGN KEY ("ocdB2cSurveyUrlId") REFERENCES "surveyUrl" ("ocdB2cSurveyUrlId");

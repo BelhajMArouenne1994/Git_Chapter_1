@@ -82,9 +82,13 @@ Table salesHistory as sHistory {
 }   
 
 
+Ref: sUrl.salesHistoryId - sHistory.ocdTicketId // Adding reference to salesHistory from surveyUrl
+
+
+
 Ref: sUrl.ocdB2cSurveyUrlId - sResponse.ocdB2cSurveyUrlId       // one-to-one
-Ref: sUrl.relatedObjectId - sHistory.ocdTicketId
-Ref: sResponse.relatedObjectId - sHistory.ocdTicketId
+Ref: sHistory.ocdTicketId - sUrl.relatedObjectId
+Ref: sHistory.ocdTicketId - sResponse.relatedObjectId
 
 
 Ref: sUrl.ocdMasterId > r.ocdMasterId                  // many-to-one
