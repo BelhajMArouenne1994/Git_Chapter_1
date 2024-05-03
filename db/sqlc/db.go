@@ -27,17 +27,41 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.createRecipientStmt, err = db.PrepareContext(ctx, createRecipient); err != nil {
 		return nil, fmt.Errorf("error preparing query CreateRecipient: %w", err)
 	}
+	if q.createSurveyUrlStmt, err = db.PrepareContext(ctx, createSurveyUrl); err != nil {
+		return nil, fmt.Errorf("error preparing query CreateSurveyUrl: %w", err)
+	}
 	if q.deleteRecipientStmt, err = db.PrepareContext(ctx, deleteRecipient); err != nil {
 		return nil, fmt.Errorf("error preparing query DeleteRecipient: %w", err)
 	}
+	if q.deleteSurveyUrlStmt, err = db.PrepareContext(ctx, deleteSurveyUrl); err != nil {
+		return nil, fmt.Errorf("error preparing query DeleteSurveyUrl: %w", err)
+	}
+	if q.findSurveyUrlsByBrandAndCountryStmt, err = db.PrepareContext(ctx, findSurveyUrlsByBrandAndCountry); err != nil {
+		return nil, fmt.Errorf("error preparing query FindSurveyUrlsByBrandAndCountry: %w", err)
+	}
 	if q.getRecipientStmt, err = db.PrepareContext(ctx, getRecipient); err != nil {
 		return nil, fmt.Errorf("error preparing query GetRecipient: %w", err)
+	}
+	if q.getSurveyUrlByIdStmt, err = db.PrepareContext(ctx, getSurveyUrlById); err != nil {
+		return nil, fmt.Errorf("error preparing query GetSurveyUrlById: %w", err)
+	}
+	if q.linkSurveyUrlToRecipientStmt, err = db.PrepareContext(ctx, linkSurveyUrlToRecipient); err != nil {
+		return nil, fmt.Errorf("error preparing query LinkSurveyUrlToRecipient: %w", err)
+	}
+	if q.listNewestSurveyUrlsStmt, err = db.PrepareContext(ctx, listNewestSurveyUrls); err != nil {
+		return nil, fmt.Errorf("error preparing query ListNewestSurveyUrls: %w", err)
+	}
+	if q.listNewestSurveyUrlsByBrandAndCountryStmt, err = db.PrepareContext(ctx, listNewestSurveyUrlsByBrandAndCountry); err != nil {
+		return nil, fmt.Errorf("error preparing query ListNewestSurveyUrlsByBrandAndCountry: %w", err)
 	}
 	if q.listRecipientsStmt, err = db.PrepareContext(ctx, listRecipients); err != nil {
 		return nil, fmt.Errorf("error preparing query ListRecipients: %w", err)
 	}
 	if q.updateRecipientStmt, err = db.PrepareContext(ctx, updateRecipient); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateRecipient: %w", err)
+	}
+	if q.updateSurveyUrlStmt, err = db.PrepareContext(ctx, updateSurveyUrl); err != nil {
+		return nil, fmt.Errorf("error preparing query UpdateSurveyUrl: %w", err)
 	}
 	return &q, nil
 }
@@ -49,14 +73,49 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing createRecipientStmt: %w", cerr)
 		}
 	}
+	if q.createSurveyUrlStmt != nil {
+		if cerr := q.createSurveyUrlStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing createSurveyUrlStmt: %w", cerr)
+		}
+	}
 	if q.deleteRecipientStmt != nil {
 		if cerr := q.deleteRecipientStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing deleteRecipientStmt: %w", cerr)
 		}
 	}
+	if q.deleteSurveyUrlStmt != nil {
+		if cerr := q.deleteSurveyUrlStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing deleteSurveyUrlStmt: %w", cerr)
+		}
+	}
+	if q.findSurveyUrlsByBrandAndCountryStmt != nil {
+		if cerr := q.findSurveyUrlsByBrandAndCountryStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing findSurveyUrlsByBrandAndCountryStmt: %w", cerr)
+		}
+	}
 	if q.getRecipientStmt != nil {
 		if cerr := q.getRecipientStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing getRecipientStmt: %w", cerr)
+		}
+	}
+	if q.getSurveyUrlByIdStmt != nil {
+		if cerr := q.getSurveyUrlByIdStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getSurveyUrlByIdStmt: %w", cerr)
+		}
+	}
+	if q.linkSurveyUrlToRecipientStmt != nil {
+		if cerr := q.linkSurveyUrlToRecipientStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing linkSurveyUrlToRecipientStmt: %w", cerr)
+		}
+	}
+	if q.listNewestSurveyUrlsStmt != nil {
+		if cerr := q.listNewestSurveyUrlsStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing listNewestSurveyUrlsStmt: %w", cerr)
+		}
+	}
+	if q.listNewestSurveyUrlsByBrandAndCountryStmt != nil {
+		if cerr := q.listNewestSurveyUrlsByBrandAndCountryStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing listNewestSurveyUrlsByBrandAndCountryStmt: %w", cerr)
 		}
 	}
 	if q.listRecipientsStmt != nil {
@@ -67,6 +126,11 @@ func (q *Queries) Close() error {
 	if q.updateRecipientStmt != nil {
 		if cerr := q.updateRecipientStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing updateRecipientStmt: %w", cerr)
+		}
+	}
+	if q.updateSurveyUrlStmt != nil {
+		if cerr := q.updateSurveyUrlStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing updateSurveyUrlStmt: %w", cerr)
 		}
 	}
 	return err
@@ -106,23 +170,39 @@ func (q *Queries) queryRow(ctx context.Context, stmt *sql.Stmt, query string, ar
 }
 
 type Queries struct {
-	db                  DBTX
-	tx                  *sql.Tx
-	createRecipientStmt *sql.Stmt
-	deleteRecipientStmt *sql.Stmt
-	getRecipientStmt    *sql.Stmt
-	listRecipientsStmt  *sql.Stmt
-	updateRecipientStmt *sql.Stmt
+	db                                        DBTX
+	tx                                        *sql.Tx
+	createRecipientStmt                       *sql.Stmt
+	createSurveyUrlStmt                       *sql.Stmt
+	deleteRecipientStmt                       *sql.Stmt
+	deleteSurveyUrlStmt                       *sql.Stmt
+	findSurveyUrlsByBrandAndCountryStmt       *sql.Stmt
+	getRecipientStmt                          *sql.Stmt
+	getSurveyUrlByIdStmt                      *sql.Stmt
+	linkSurveyUrlToRecipientStmt              *sql.Stmt
+	listNewestSurveyUrlsStmt                  *sql.Stmt
+	listNewestSurveyUrlsByBrandAndCountryStmt *sql.Stmt
+	listRecipientsStmt                        *sql.Stmt
+	updateRecipientStmt                       *sql.Stmt
+	updateSurveyUrlStmt                       *sql.Stmt
 }
 
 func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 	return &Queries{
-		db:                  tx,
-		tx:                  tx,
-		createRecipientStmt: q.createRecipientStmt,
-		deleteRecipientStmt: q.deleteRecipientStmt,
-		getRecipientStmt:    q.getRecipientStmt,
-		listRecipientsStmt:  q.listRecipientsStmt,
-		updateRecipientStmt: q.updateRecipientStmt,
+		db:                                  tx,
+		tx:                                  tx,
+		createRecipientStmt:                 q.createRecipientStmt,
+		createSurveyUrlStmt:                 q.createSurveyUrlStmt,
+		deleteRecipientStmt:                 q.deleteRecipientStmt,
+		deleteSurveyUrlStmt:                 q.deleteSurveyUrlStmt,
+		findSurveyUrlsByBrandAndCountryStmt: q.findSurveyUrlsByBrandAndCountryStmt,
+		getRecipientStmt:                    q.getRecipientStmt,
+		getSurveyUrlByIdStmt:                q.getSurveyUrlByIdStmt,
+		linkSurveyUrlToRecipientStmt:        q.linkSurveyUrlToRecipientStmt,
+		listNewestSurveyUrlsStmt:            q.listNewestSurveyUrlsStmt,
+		listNewestSurveyUrlsByBrandAndCountryStmt: q.listNewestSurveyUrlsByBrandAndCountryStmt,
+		listRecipientsStmt:                        q.listRecipientsStmt,
+		updateRecipientStmt:                       q.updateRecipientStmt,
+		updateSurveyUrlStmt:                       q.updateSurveyUrlStmt,
 	}
 }

@@ -29,7 +29,7 @@ func (nps *Nps) execTx(ctx context.Context, fn func(*Queries) error) error {
 	err = fn(q)
 	if err != nil {
 		if rbError := tx.Rollback(); rbError != nil {
-			return fmt.Errorf("Error %v failed to rollback: %v", err, rbError)
+			return fmt.Errorf(`error %v failed to rollback: %v;`, err, rbError)
 		}
 		return err
 	}
