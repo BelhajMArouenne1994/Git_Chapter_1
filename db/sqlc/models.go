@@ -5,70 +5,69 @@
 package db
 
 import (
-	"database/sql"
 	"time"
 )
 
 type Recipient struct {
-	OcdMasterId string         `json:"ocdMasterId"`
-	Username    sql.NullString `json:"username"`
-	Role        sql.NullString `json:"role"`
-	CreatedAt   sql.NullTime   `json:"created_at"`
+	OcdMasterId string    `json:"ocdMasterId"`
+	Username    string    `json:"username"`
+	Role        string    `json:"role"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 type SalesHistory struct {
-	Brand                   sql.NullString `json:"brand"`
-	Country                 sql.NullString `json:"country"`
-	OcdTicketId             string         `json:"ocdTicketId"`
-	TechnicalCreationDate   sql.NullTime   `json:"technicalCreationDate"`
-	TechnicalLastUpdateDate sql.NullTime   `json:"technicalLastUpdateDate"`
-	Source                  sql.NullString `json:"source"`
-	SourceName              sql.NullString `json:"sourceName"`
-	SourceChannel           sql.NullString `json:"sourceChannel"`
-	SourcePersonId          sql.NullString `json:"sourcePersonId"`
-	SourceTicketNumber      sql.NullString `json:"sourceTicketNumber"`
-	SourceStoreType         sql.NullString `json:"sourceStoreType"`
-	SourceStatusOrder       sql.NullString `json:"sourceStatusOrder"`
-	OcdContactMasterId      sql.NullString `json:"ocdContactMasterId"`
-	OcdContactVersionId     sql.NullString `json:"ocdContactVersionId"`
-	OcdStoreId              sql.NullString `json:"ocdStoreId"`
+	Brand                   string    `json:"brand"`
+	Country                 string    `json:"country"`
+	OcdTicketId             string    `json:"ocdTicketId"`
+	TechnicalCreationDate   time.Time `json:"technicalCreationDate"`
+	TechnicalLastUpdateDate time.Time `json:"technicalLastUpdateDate"`
+	Source                  string    `json:"source"`
+	SourceName              string    `json:"sourceName"`
+	SourceChannel           string    `json:"sourceChannel"`
+	SourcePersonId          string    `json:"sourcePersonId"`
+	SourceTicketNumber      string    `json:"sourceTicketNumber"`
+	SourceStoreType         string    `json:"sourceStoreType"`
+	SourceStatusOrder       string    `json:"sourceStatusOrder"`
+	OcdContactMasterId      string    `json:"ocdContactMasterId"`
+	OcdContactVersionId     string    `json:"ocdContactVersionId"`
+	OcdStoreId              string    `json:"ocdStoreId"`
 }
 
 type SurveyResponse struct {
-	Brand                   string         `json:"brand"`
-	Country                 string         `json:"country"`
-	OcdB2cSurveyResponseId  string         `json:"ocdB2cSurveyResponseId"`
-	OcdB2cSurveyUrlId       string         `json:"ocdB2cSurveyUrlId"`
-	OcdMasterId             string         `json:"ocdMasterId"`
-	TechnicalCreationDate   time.Time      `json:"technicalCreationDate"`
-	TechnicalLastUpdateDate time.Time      `json:"technicalLastUpdateDate"`
-	SourceName              string         `json:"sourceName"`
-	Url                     sql.NullString `json:"url"`
-	SurveyId                string         `json:"surveyId"`
-	SurveyStatus            string         `json:"surveyStatus"`
-	Scenario                string         `json:"Scenario"`
-	Channel                 string         `json:"Channel"`
-	RelatedObjectName       sql.NullString `json:"relatedObjectName"`
-	RelatedObjectId         string         `json:"relatedObjectId"`
-	AnswerDate              sql.NullTime   `json:"answerDate"`
-	EndDate                 time.Time      `json:"endDate"`
-	NpsSegmentation         sql.NullString `json:"npsSegmentation"`
+	Brand                   string    `json:"brand"`
+	Country                 string    `json:"country"`
+	OcdB2cSurveyResponseId  string    `json:"ocdB2cSurveyResponseId"`
+	OcdB2cSurveyUrlId       string    `json:"ocdB2cSurveyUrlId"`
+	OcdMasterId             string    `json:"ocdMasterId"`
+	TechnicalCreationDate   time.Time `json:"technicalCreationDate"`
+	TechnicalLastUpdateDate time.Time `json:"technicalLastUpdateDate"`
+	SourceName              string    `json:"sourceName"`
+	Url                     string    `json:"url"`
+	SurveyId                string    `json:"surveyId"`
+	SurveyStatus            string    `json:"surveyStatus"`
+	Scenario                string    `json:"Scenario"`
+	Channel                 string    `json:"Channel"`
+	RelatedObjectName       string    `json:"relatedObjectName"`
+	RelatedObjectId         string    `json:"relatedObjectId"`
+	AnswerDate              time.Time `json:"answerDate"`
+	EndDate                 time.Time `json:"endDate"`
+	NpsSegmentation         string    `json:"npsSegmentation"`
 }
 
 type SurveyUrl struct {
-	Brand                   string         `json:"brand"`
-	Country                 string         `json:"country"`
-	OcdB2cSurveyUrlId       string         `json:"ocdB2cSurveyUrlId"`
-	TechnicalCreationDate   time.Time      `json:"technicalCreationDate"`
-	TechnicalLastUpdateDate time.Time      `json:"technicalLastUpdateDate"`
-	SourceName              string         `json:"sourceName"`
-	SourceSurveyId          string         `json:"sourceSurveyId"`
-	SurveyId                string         `json:"surveyId"`
-	Scenario                string         `json:"scenario"`
-	Channel                 string         `json:"channel"`
-	SurveyLanguage          string         `json:"surveyLanguage"`
-	OcdMasterId             sql.NullString `json:"ocdMasterId"`
-	RelatedObjectName       sql.NullString `json:"relatedObjectName"`
-	RelatedObjectId         sql.NullString `json:"relatedObjectId"`
-	Url                     sql.NullString `json:"url"`
+	Brand                   string    `json:"brand"`
+	Country                 string    `json:"country"`
+	OcdB2cSurveyUrlId       string    `json:"ocdB2cSurveyUrlId"`
+	TechnicalCreationDate   time.Time `json:"technicalCreationDate"`
+	TechnicalLastUpdateDate time.Time `json:"technicalLastUpdateDate"`
+	SourceName              string    `json:"sourceName"`
+	SourceSurveyId          string    `json:"sourceSurveyId"`
+	SurveyId                string    `json:"surveyId"`
+	Scenario                string    `json:"scenario"`
+	Channel                 string    `json:"channel"`
+	SurveyLanguage          string    `json:"surveyLanguage"`
+	OcdMasterId             string    `json:"ocdMasterId"`
+	RelatedObjectName       string    `json:"relatedObjectName"`
+	RelatedObjectId         string    `json:"relatedObjectId"`
+	Url                     string    `json:"url"`
 }

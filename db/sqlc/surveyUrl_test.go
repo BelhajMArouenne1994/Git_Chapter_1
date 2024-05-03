@@ -2,7 +2,6 @@ package db
 
 import (
     "context"
-    "database/sql"
     "testing"
 	"time"
 
@@ -24,10 +23,10 @@ func TestCreateSurveyUrl(t *testing.T) {
 		Scenario:                "Product Feedback",
 		Channel:                 "Online",
 		SurveyLanguage:          "EN",
-		OcdMasterId:             sql.NullString{String: "", Valid: false},
-		RelatedObjectName:       sql.NullString{String: "Product", Valid: true},
-		RelatedObjectId:         sql.NullString{String: "PRD123456", Valid: true},
-		Url:                     sql.NullString{String: "http://www.example.com/survey", Valid: true},
+		OcdMasterId:             "",
+		RelatedObjectName:       "Product",
+		RelatedObjectId:         "PRD123456",
+		Url:                     "http://www.example.com/survey",
 	}
 
 	createdSurveyUrl, err := testQueries.CreateSurveyUrl(context.Background(), surveyUrlParams)

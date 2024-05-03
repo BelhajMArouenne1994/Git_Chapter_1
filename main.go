@@ -18,7 +18,6 @@ const (
 	database = "nps-postgres"
 )
 
-var testQueries *db.Queries
 var databaseCurrent *sql.DB
 
 func main() {

@@ -7,7 +7,7 @@ package db
 
 import (
 	"context"
-	"database/sql"
+	"time"
 )
 
 const createRecipient = `-- name: CreateRecipient :one
@@ -20,10 +20,10 @@ RETURNING "ocdMasterId", username, role, created_at
 `
 
 type CreateRecipientParams struct {
-	OcdMasterId string         `json:"ocdMasterId"`
-	Username    sql.NullString `json:"username"`
-	Role        sql.NullString `json:"role"`
-	CreatedAt   sql.NullTime   `json:"created_at"`
+	OcdMasterId string    `json:"ocdMasterId"`
+	Username    string    `json:"username"`
+	Role        string    `json:"role"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 func (q *Queries) CreateRecipient(ctx context.Context, arg CreateRecipientParams) (Recipient, error) {
@@ -113,10 +113,10 @@ RETURNING "ocdMasterId", username, role, created_at
 `
 
 type UpdateRecipientParams struct {
-	OcdMasterId string         `json:"ocdMasterId"`
-	Username    sql.NullString `json:"username"`
-	Role        sql.NullString `json:"role"`
-	CreatedAt   sql.NullTime   `json:"created_at"`
+	OcdMasterId string    `json:"ocdMasterId"`
+	Username    string    `json:"username"`
+	Role        string    `json:"role"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 func (q *Queries) UpdateRecipient(ctx context.Context, arg UpdateRecipientParams) error {

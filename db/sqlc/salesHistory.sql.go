@@ -7,7 +7,7 @@ package db
 
 import (
 	"context"
-	"database/sql"
+	"time"
 )
 
 const createSalesHistory = `-- name: CreateSalesHistory :one
@@ -34,21 +34,21 @@ RETURNING brand, country, "ocdTicketId", "technicalCreationDate", "technicalLast
 `
 
 type CreateSalesHistoryParams struct {
-	Brand                   sql.NullString `json:"brand"`
-	Country                 sql.NullString `json:"country"`
-	OcdTicketId             string         `json:"ocdTicketId"`
-	TechnicalCreationDate   sql.NullTime   `json:"technicalCreationDate"`
-	TechnicalLastUpdateDate sql.NullTime   `json:"technicalLastUpdateDate"`
-	Source                  sql.NullString `json:"source"`
-	SourceName              sql.NullString `json:"sourceName"`
-	SourceChannel           sql.NullString `json:"sourceChannel"`
-	SourcePersonId          sql.NullString `json:"sourcePersonId"`
-	SourceTicketNumber      sql.NullString `json:"sourceTicketNumber"`
-	SourceStoreType         sql.NullString `json:"sourceStoreType"`
-	SourceStatusOrder       sql.NullString `json:"sourceStatusOrder"`
-	OcdContactMasterId      sql.NullString `json:"ocdContactMasterId"`
-	OcdContactVersionId     sql.NullString `json:"ocdContactVersionId"`
-	OcdStoreId              sql.NullString `json:"ocdStoreId"`
+	Brand                   string    `json:"brand"`
+	Country                 string    `json:"country"`
+	OcdTicketId             string    `json:"ocdTicketId"`
+	TechnicalCreationDate   time.Time `json:"technicalCreationDate"`
+	TechnicalLastUpdateDate time.Time `json:"technicalLastUpdateDate"`
+	Source                  string    `json:"source"`
+	SourceName              string    `json:"sourceName"`
+	SourceChannel           string    `json:"sourceChannel"`
+	SourcePersonId          string    `json:"sourcePersonId"`
+	SourceTicketNumber      string    `json:"sourceTicketNumber"`
+	SourceStoreType         string    `json:"sourceStoreType"`
+	SourceStatusOrder       string    `json:"sourceStatusOrder"`
+	OcdContactMasterId      string    `json:"ocdContactMasterId"`
+	OcdContactVersionId     string    `json:"ocdContactVersionId"`
+	OcdStoreId              string    `json:"ocdStoreId"`
 }
 
 func (q *Queries) CreateSalesHistory(ctx context.Context, arg CreateSalesHistoryParams) (SalesHistory, error) {
@@ -109,8 +109,8 @@ LIMIT 10
 `
 
 type FindSalesHistoryByBrandParams struct {
-	Brand   sql.NullString `json:"brand"`
-	Country sql.NullString `json:"country"`
+	Brand   string `json:"brand"`
+	Country string `json:"country"`
 }
 
 func (q *Queries) FindSalesHistoryByBrand(ctx context.Context, arg FindSalesHistoryByBrandParams) ([]SalesHistory, error) {
@@ -160,7 +160,7 @@ ORDER BY "technicalLastUpdateDate" DESC
 LIMIT 10
 `
 
-func (q *Queries) FindSalesHistoryByCountry(ctx context.Context, country sql.NullString) ([]SalesHistory, error) {
+func (q *Queries) FindSalesHistoryByCountry(ctx context.Context, country string) ([]SalesHistory, error) {
 	rows, err := q.query(ctx, q.findSalesHistoryByCountryStmt, findSalesHistoryByCountry, country)
 	if err != nil {
 		return nil, err
@@ -297,21 +297,21 @@ RETURNING brand, country, "ocdTicketId", "technicalCreationDate", "technicalLast
 `
 
 type UpdateSalesHistoryParams struct {
-	Brand                   sql.NullString `json:"brand"`
-	Country                 sql.NullString `json:"country"`
-	TechnicalCreationDate   sql.NullTime   `json:"technicalCreationDate"`
-	TechnicalLastUpdateDate sql.NullTime   `json:"technicalLastUpdateDate"`
-	Source                  sql.NullString `json:"source"`
-	SourceName              sql.NullString `json:"sourceName"`
-	SourceChannel           sql.NullString `json:"sourceChannel"`
-	SourcePersonId          sql.NullString `json:"sourcePersonId"`
-	SourceTicketNumber      sql.NullString `json:"sourceTicketNumber"`
-	SourceStoreType         sql.NullString `json:"sourceStoreType"`
-	SourceStatusOrder       sql.NullString `json:"sourceStatusOrder"`
-	OcdContactMasterId      sql.NullString `json:"ocdContactMasterId"`
-	OcdContactVersionId     sql.NullString `json:"ocdContactVersionId"`
-	OcdStoreId              sql.NullString `json:"ocdStoreId"`
-	OcdTicketId             string         `json:"ocdTicketId"`
+	Brand                   string    `json:"brand"`
+	Country                 string    `json:"country"`
+	TechnicalCreationDate   time.Time `json:"technicalCreationDate"`
+	TechnicalLastUpdateDate time.Time `json:"technicalLastUpdateDate"`
+	Source                  string    `json:"source"`
+	SourceName              string    `json:"sourceName"`
+	SourceChannel           string    `json:"sourceChannel"`
+	SourcePersonId          string    `json:"sourcePersonId"`
+	SourceTicketNumber      string    `json:"sourceTicketNumber"`
+	SourceStoreType         string    `json:"sourceStoreType"`
+	SourceStatusOrder       string    `json:"sourceStatusOrder"`
+	OcdContactMasterId      string    `json:"ocdContactMasterId"`
+	OcdContactVersionId     string    `json:"ocdContactVersionId"`
+	OcdStoreId              string    `json:"ocdStoreId"`
+	OcdTicketId             string    `json:"ocdTicketId"`
 }
 
 func (q *Queries) UpdateSalesHistory(ctx context.Context, arg UpdateSalesHistoryParams) (SalesHistory, error) {

@@ -7,7 +7,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 	"time"
 )
 
@@ -35,21 +34,21 @@ RETURNING brand, country, "ocdB2cSurveyUrlId", "technicalCreationDate", "technic
 `
 
 type CreateSurveyUrlParams struct {
-	Brand                   string         `json:"brand"`
-	Country                 string         `json:"country"`
-	OcdB2cSurveyUrlId       string         `json:"ocdB2cSurveyUrlId"`
-	TechnicalCreationDate   time.Time      `json:"technicalCreationDate"`
-	TechnicalLastUpdateDate time.Time      `json:"technicalLastUpdateDate"`
-	SourceName              string         `json:"sourceName"`
-	SourceSurveyId          string         `json:"sourceSurveyId"`
-	SurveyId                string         `json:"surveyId"`
-	Scenario                string         `json:"scenario"`
-	Channel                 string         `json:"channel"`
-	SurveyLanguage          string         `json:"surveyLanguage"`
-	OcdMasterId             sql.NullString `json:"ocdMasterId"`
-	RelatedObjectName       sql.NullString `json:"relatedObjectName"`
-	RelatedObjectId         sql.NullString `json:"relatedObjectId"`
-	Url                     sql.NullString `json:"url"`
+	Brand                   string    `json:"brand"`
+	Country                 string    `json:"country"`
+	OcdB2cSurveyUrlId       string    `json:"ocdB2cSurveyUrlId"`
+	TechnicalCreationDate   time.Time `json:"technicalCreationDate"`
+	TechnicalLastUpdateDate time.Time `json:"technicalLastUpdateDate"`
+	SourceName              string    `json:"sourceName"`
+	SourceSurveyId          string    `json:"sourceSurveyId"`
+	SurveyId                string    `json:"surveyId"`
+	Scenario                string    `json:"scenario"`
+	Channel                 string    `json:"channel"`
+	SurveyLanguage          string    `json:"surveyLanguage"`
+	OcdMasterId             string    `json:"ocdMasterId"`
+	RelatedObjectName       string    `json:"relatedObjectName"`
+	RelatedObjectId         string    `json:"relatedObjectId"`
+	Url                     string    `json:"url"`
 }
 
 func (q *Queries) CreateSurveyUrl(ctx context.Context, arg CreateSurveyUrlParams) (SurveyUrl, error) {
@@ -189,8 +188,8 @@ RETURNING brand, country, "ocdB2cSurveyUrlId", "technicalCreationDate", "technic
 `
 
 type LinkSurveyUrlToRecipientParams struct {
-	OcdMasterId       sql.NullString `json:"ocdMasterId"`
-	OcdB2cSurveyUrlId string         `json:"ocdB2cSurveyUrlId"`
+	OcdMasterId       string `json:"ocdMasterId"`
+	OcdB2cSurveyUrlId string `json:"ocdB2cSurveyUrlId"`
 }
 
 func (q *Queries) LinkSurveyUrlToRecipient(ctx context.Context, arg LinkSurveyUrlToRecipientParams) (SurveyUrl, error) {
@@ -335,20 +334,20 @@ RETURNING brand, country, "ocdB2cSurveyUrlId", "technicalCreationDate", "technic
 `
 
 type UpdateSurveyUrlParams struct {
-	Brand                   string         `json:"brand"`
-	Country                 string         `json:"country"`
-	TechnicalCreationDate   time.Time      `json:"technicalCreationDate"`
-	TechnicalLastUpdateDate time.Time      `json:"technicalLastUpdateDate"`
-	SourceName              string         `json:"sourceName"`
-	SourceSurveyId          string         `json:"sourceSurveyId"`
-	SurveyId                string         `json:"surveyId"`
-	Scenario                string         `json:"scenario"`
-	Channel                 string         `json:"channel"`
-	SurveyLanguage          string         `json:"surveyLanguage"`
-	RelatedObjectName       sql.NullString `json:"relatedObjectName"`
-	RelatedObjectId         sql.NullString `json:"relatedObjectId"`
-	Url                     sql.NullString `json:"url"`
-	OcdB2cSurveyUrlId       string         `json:"ocdB2cSurveyUrlId"`
+	Brand                   string    `json:"brand"`
+	Country                 string    `json:"country"`
+	TechnicalCreationDate   time.Time `json:"technicalCreationDate"`
+	TechnicalLastUpdateDate time.Time `json:"technicalLastUpdateDate"`
+	SourceName              string    `json:"sourceName"`
+	SourceSurveyId          string    `json:"sourceSurveyId"`
+	SurveyId                string    `json:"surveyId"`
+	Scenario                string    `json:"scenario"`
+	Channel                 string    `json:"channel"`
+	SurveyLanguage          string    `json:"surveyLanguage"`
+	RelatedObjectName       string    `json:"relatedObjectName"`
+	RelatedObjectId         string    `json:"relatedObjectId"`
+	Url                     string    `json:"url"`
+	OcdB2cSurveyUrlId       string    `json:"ocdB2cSurveyUrlId"`
 }
 
 func (q *Queries) UpdateSurveyUrl(ctx context.Context, arg UpdateSurveyUrlParams) (SurveyUrl, error) {

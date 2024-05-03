@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 	"testing"
 	"time"
 
@@ -23,9 +22,9 @@ func TestNpsCreationTx(t *testing.T) {
 	for i:=0 ; i < 10; i++ {
 		argRecipient := CreateRecipientParams{
 			OcdMasterId: uuid.New().String(),
-			Username: sql.NullString{String: "TEST_RECIPIENT", Valid: true},
-			Role: sql.NullString{String: "TEST_RECIPIENT", Valid: true},
-			CreatedAt: sql.NullTime{Time: time.Now().UTC(), Valid: true},
+			Username:"TEST_RECIPIENT",
+			Role:"TEST_RECIPIENT",
+			CreatedAt: time.Now().UTC(),
 		}
 		go func ()  {
 			result, err := nps.NpsRecipientCreationTx(context.Background(), NpsRecipientCreationTxParams {
@@ -53,21 +52,21 @@ func TestNpsCreationTx(t *testing.T) {
 		//ocdTicketIds := make([]string, 10) // Slice to store ocdTicketId
 		for i:=0 ; i < 10; i++ {
 			salesHistoryParams := CreateSalesHistoryParams{
-				Brand:                   sql.NullString{String: "Acme Corp", Valid: true},
-				Country:                 sql.NullString{String: "US", Valid: true},
+				Brand:                  "Acme Corp",
+				Country:                "US",
 				OcdTicketId:             uuid.New().String(),
-				TechnicalCreationDate:   sql.NullTime{Time: time.Now(), Valid: true},
-				TechnicalLastUpdateDate: sql.NullTime{Time: time.Now(), Valid: true},
-				Source:                  sql.NullString{String: "Online", Valid: true},
-				SourceName:              sql.NullString{String: "Main Website", Valid: true},
-				SourceChannel:           sql.NullString{String: "Web", Valid: true},
-				SourcePersonId:          sql.NullString{String: "12345", Valid: true},
-				SourceTicketNumber:      sql.NullString{String: "10001", Valid: true},
-				SourceStoreType:         sql.NullString{String: "Retail", Valid: true},
-				SourceStatusOrder:       sql.NullString{String: "Completed", Valid: true},
-					OcdContactMasterId:      sql.NullString{String: results.Recipient.OcdMasterId, Valid: true},
-				OcdContactVersionId:     sql.NullString{String: "VID123456", Valid: true},
-				OcdStoreId:              sql.NullString{String: "SID123456", Valid: true},
+				TechnicalCreationDate:   time.Now(),
+				TechnicalLastUpdateDate: time.Now(),
+				Source:                 "Online",
+				SourceName:             "Main Website",
+				SourceChannel:          "Web",
+				SourcePersonId:         "12345",
+				SourceTicketNumber:     "10001",
+				SourceStoreType:        "Retail",
+				SourceStatusOrder:      "Completed",
+				OcdContactMasterId:     results.Recipient.OcdMasterId,
+				OcdContactVersionId:    "VID123456",
+				OcdStoreId:             "SID123456",
 			}
 
 			go func () {
