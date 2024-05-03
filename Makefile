@@ -9,3 +9,6 @@ migrateUp:
 
 migrateDown:
 		migrate -path db/migrations -database "postgresql://root:secret@localhost:5432/nps-postgres?sslmode=disable" -verbose down
+
+server:
+	go run main.go
