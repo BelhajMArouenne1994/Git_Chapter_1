@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -37,28 +38,54 @@ func (nps *Nps) execTx(ctx context.Context, fn func(*Queries) error) error {
 	return tx.Commit()
 }
 
-type NpsCreationTxParams struct {
-	CreateRecipientParams    CreateRecipientParams    `json:"CreateRecipient"`
+type NpsRecipientCreationTxParams struct {
+	CreateRecipientParams CreateRecipientParams `json:"createRecipient"`
 }
 
-type NpsCreationTxResult struct {
-	Recipient    Recipient    `json:"recipient"`
+type NpsRecipientCreationTxResult struct {
+	Recipient Recipient `json:"recipient"`
 }
 
-func (nps *Nps) NpsCreationTx(ctx context.Context, arg NpsCreationTxParams) (NpsCreationTxResult, error) {
-	var result NpsCreationTxResult
+func (nps *Nps) NpsRecipientCreationTx(ctx context.Context, arg NpsRecipientCreationTxParams) (NpsRecipientCreationTxResult, error) {
+	var result NpsRecipientCreationTxResult
 
 	err := nps.execTx(ctx, func(q *Queries) error {
 		var err error // Declare err variable here
 		result.Recipient, err = q.CreateRecipient(ctx, CreateRecipientParams(arg.CreateRecipientParams))
 		if err != nil {
-            return err
-        }
+			return err
+		}
 		return nil
 	})
 
 	if err != nil {
-        return result, err
-    }
+		return result, err
+	}
+	return result, nil
+}
+
+type NpsCreationSalesHistoryTxParams struct {
+	CreateSalesHistoryParams CreateSalesHistoryParams `json:"createSalesHistory"`
+}
+
+type NpsCreationSalesHistoryTxResult struct {
+	SalesHistory SalesHistory `json:"salesHistory"`
+}
+
+func (nps *Nps) NpsCreationSalesHistoryTx(ctx context.Context, arg NpsCreationSalesHistoryTxParams) (NpsCreationSalesHistoryTxResult, error) {
+	var result NpsCreationSalesHistoryTxResult
+
+	err := nps.execTx(ctx, func(q *Queries) error {
+		var err error // Declare err variable here
+		result.SalesHistory, err = q.CreateSalesHistory(ctx, CreateSalesHistoryParams(arg.CreateSalesHistoryParams))
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+
+	if err != nil {
+		return result, err
+	}
 	return result, nil
 }
