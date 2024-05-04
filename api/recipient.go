@@ -40,3 +40,17 @@ func (server *Server) createRecipient(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"data": res.Recipient})
 	return
 }
+
+
+type getRecipientByIDRequest struct {
+	OcdMasterId string `uri:"ocdMasterId" binding:"required"`
+} 
+
+func (server Server) getRecipientByID(ctx *gin.Context) {
+	var req getRecipientByIDRequest
+	if err := ctx.BindUri(&req); err!= nil {
+        ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+}

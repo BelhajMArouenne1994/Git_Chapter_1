@@ -22,6 +22,7 @@ func NewServer(nps *db.Nps) *Server {
 
 
 	router.POST("/Recipients", server.createRecipient)
+	router.GET("/Recipients/:ocdMasterId", server.getRecipientByID)
 
 	server.router = router
 	return server

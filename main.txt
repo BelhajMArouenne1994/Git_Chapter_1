@@ -1,0 +1,43 @@
+package main
+
+import (
+	"database/sql"
+	"log"
+
+	api "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/api"
+	db "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/db/sqlc"
+	_ "github.com/lib/pq"
+)
+
+const (
+	dbDriver = "postgres"
+	host     = "localhost"
+	port     = "5432"
+	user     = "root"
+	password = "secret"
+	database = "nps-postgres"
+)
+
+var databaseCurrent *sql.DB
+
+
+
+func mainOLD() {
+
+	var err error
+	databaseCurrent, err = sql.Open(dbDriver, "postgresql://"+user+":"+password+"@"+host+":"+port+"/"+database+"?sslmode=disable")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	nps := db.NewNps(databaseCurrent)
+
+	server := api.NewServer(nps)
+	server.Start("0.0.0.0:8080")
+}
+
+
+
+
+Error retrieving data: HTTP Status 500: 
+<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"><soap:Header><wsa:Action>http://schemas.xmlsoap.org/ws/2004/08/addressing/fault</wsa:Action><wsa:MessageID>urn:uuid:e8634c21-5467-4885-b114-bdec568786e5</wsa:MessageID><wsa:RelatesTo>urn:uuid:a54fa533-5f22-4342-97fd-818a20fef62d</wsa:RelatesTo><wsa:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</wsa:To><wsse:Security><wsu:Timestamp wsu:Id="Timestamp-440f1b38-4dfe-4f55-a196-9042d6d8cf18"><wsu:Created>2024-05-04T16:21:39Z</wsu:Created><wsu:Expires>2024-05-04T16:26:39Z</wsu:Expires></wsu:Timestamp></wsse:Security></soap:Header><soap:Body><soap:Fault><faultcode xmlns:q0="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">q0:Security</faultcode><faultstring>Security requirements are not satisfied because the security header is not present in the incoming message.</faultstring><faultactor>https://mc166917qx7lk8ldd5cwvlp6ftzq.soap.marketingcloudapis.com/Service.asmx</faultactor></soap:Fault></soap:Body></soap:Envelope>

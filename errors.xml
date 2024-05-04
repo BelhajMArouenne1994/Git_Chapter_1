@@ -1,0 +1,31 @@
+2024/05/04 18:47:43 Error retrieving data: HTTP Status 500: <?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+	xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+	<soap:Header>
+		<wsa:Action>http://schemas.xmlsoap.org/ws/2004/08/addressing/fault</wsa:Action>
+		<wsa:MessageID>urn:uuid:74e89c73-9843-41a4-9c91-bbec851902c9</wsa:MessageID>
+		<wsa:RelatesTo>urn:uuid:955e9785-c053-4a71-8c68-192640411408</wsa:RelatesTo>
+		<wsa:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</wsa:To>
+		<wsse:Security>
+			<wsu:Timestamp wsu:Id="Timestamp-abf9f3cb-b7ef-495d-af94-9b4c1db2c1b4">
+				<wsu:Created>2024-05-04T16:47:45Z</wsu:Created>
+				<wsu:Expires>2024-05-04T16:52:45Z</wsu:Expires>
+			</wsu:Timestamp>
+		</wsse:Security>
+	</soap:Header>
+	<soap:Body>
+		<soap:Fault>
+			<faultcode
+				xmlns:q0="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+				q0:Security</faultcode>
+			<faultstring>Login failed</faultstring>
+			<faultactor>
+				https://mc166917qx7lk8ldd5cwvlp6ftzq.soap.marketingcloudapis.com/Service.asmx</faultactor>
+		</soap:Fault>
+	</soap:Body>
+</soap:Envelope>
+exit status 1

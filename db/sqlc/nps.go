@@ -65,6 +65,7 @@ func (nps *Nps) NpsRecipientCreationTx(ctx context.Context, arg NpsRecipientCrea
 }
 
 
+
 type NpsCreationSalesHistoryTxParams struct {
 	CreateSalesHistoryParams CreateSalesHistoryParams `json:"createSalesHistory"`
 }

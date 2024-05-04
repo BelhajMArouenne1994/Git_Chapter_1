@@ -6,6 +6,7 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/google/uuid v1.6.0
+	github.com/hooklift/gowsdl v0.5.0
 	github.com/lib/pq v1.10.9
 	github.com/stretchr/testify v1.9.0
 )
