@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/xml"
 	"fmt"
 	//"go/token"
 	"log"
@@ -9,11 +10,17 @@ import (
 	gosoap "github.com/hooklift/gowsdl/soap"                 // Assuming this is the SOAP client library
 )
 
+
+type FuelOAuth struct {
+    XMLName     xml.Name `xml:"http://exacttarget.com fueloauth"`
+    AccessToken string   `xml:",chardata"`
+}
+
 func main() {
+    fuelOAuthHeader := FuelOAuth{
+        AccessToken: "eyJhbGciOiJIUzI1NiIsImtpZCI6IjQiLCJ2ZXIiOiIxIiwidHlwIjoiSldUIn0.eyJhY2Nlc3NfdG9rZW4iOiJYNHowSHJzUDJEMXVmTk52WUFtMFYyWnYiLCJjbGllbnRfaWQiOiJidW0ybDhpcjhpam5qcWtlMXExaDBmbm8iLCJlaWQiOjUxMDAwOTI2Miwic3RhY2tfa2V5IjoiUzUwIiwicGxhdGZvcm1fdmVyc2lvbiI6MiwiY2xpZW50X3R5cGUiOiJTZXJ2ZXJUb1NlcnZlciIsInBpZCI6OTN9.4svWd6eFTI83bQOGj0XnSkaaMX6wKOJcpvt-dkwBo1w.fFdsTNKmltkOWnmx0ymJawJxyqq7oIsER2IwaI9JkbATnsI6SrZU2XgeVbTOW2EPRDGQZDjV89vLaAVvdi1JxMnInTVmTiFMHfAynUvXNesAICNeuS14Pqvnb-Gw5GNK1JDrBb0rqPUPQ0dHolWQ9DIZb1UK6wucUF-Kf98",
+    }
 
-
-
-    securityHeader := gosoap.NewWSSSecurityHeader("user", "pass", "eyJhbGciOiJIUzI1NiIsImtpZCI6IjQiLCJ2ZXIiOiIxIiwidHlwIjoiSldUIn0.eyJhY2Nlc3NfdG9rZW4iOiJYQ0c1eVJJS3VnSDNZUVFOTjBtSk53cW0iLCJjbGllbnRfaWQiOiJidW0ybDhpcjhpam5qcWtlMXExaDBmbm8iLCJlaWQiOjUxMDAwOTI2Miwic3RhY2tfa2V5IjoiUzUwIiwicGxhdGZvcm1fdmVyc2lvbiI6MiwiY2xpZW50X3R5cGUiOiJTZXJ2ZXJUb1NlcnZlciIsInBpZCI6OTN9.dYDC-h6kE58UKZv65rzXFuSRsP2dcYS4O4Bz-HlPSO0.RATE0zC6VrSvjS38sGehLewRD2FH79xOwD5dZP_iu2J5rJUB8LZfcDhhqJE8EpvIcrk5lbhI51QndhLyXPG0zdHLggPSnz01sZ8o5UdKEa6jlfFFqSapMMVA2XmjbRNGrNq_cI-X9tJ7A-QZIAEM3GRkTscAbiSrIVI9kcb", "1")
     // Assuming you have a way to create and configure a SOAP client
     // Setup details like endpoint, credentials, etc., should be configured here
     url := "https://mc166917qx7lk8ldd5cwvlp6ftzq.soap.marketingcloudapis.com/Service.asmx" // Replace with the actual endpoint
@@ -21,7 +28,7 @@ func main() {
     client := gosoap.NewClient(url) // This method would be your configured SOAP client constructor
 
 
-    client.AddHeader(securityHeader)
+    client.AddHeader(fuelOAuthHeader)
 
     // Create an instance of your SFMC SOAP client
     soapClient := sfmc.NewSoap(client)

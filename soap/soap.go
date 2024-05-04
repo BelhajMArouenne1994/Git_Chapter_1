@@ -10,6 +10,11 @@ import (
 	"time"
 )
 
+type FuelOAuth struct {
+    XMLName     xml.Name `xml:"http://exacttarget.com fueloauth"`
+    AccessToken string   `xml:",chardata"`
+}
+
 type SOAPEnvelope struct {
 	XMLName xml.Name `xml:"http://schemas.xmlsoap.org/soap/envelope/ Envelope"`
 	Header  *SOAPHeader
