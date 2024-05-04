@@ -18,7 +18,7 @@ type FuelOAuth struct {
 
 func main() {
     fuelOAuthHeader := FuelOAuth{
-        AccessToken: "eyJhbGciOiJIUzI1NiIsImtpZCI6IjQiLCJ2ZXIiOiIxIiwidHlwIjoiSldUIn0.eyJhY2Nlc3NfdG9rZW4iOiJYNHowSHJzUDJEMXVmTk52WUFtMFYyWnYiLCJjbGllbnRfaWQiOiJidW0ybDhpcjhpam5qcWtlMXExaDBmbm8iLCJlaWQiOjUxMDAwOTI2Miwic3RhY2tfa2V5IjoiUzUwIiwicGxhdGZvcm1fdmVyc2lvbiI6MiwiY2xpZW50X3R5cGUiOiJTZXJ2ZXJUb1NlcnZlciIsInBpZCI6OTN9.4svWd6eFTI83bQOGj0XnSkaaMX6wKOJcpvt-dkwBo1w.fFdsTNKmltkOWnmx0ymJawJxyqq7oIsER2IwaI9JkbATnsI6SrZU2XgeVbTOW2EPRDGQZDjV89vLaAVvdi1JxMnInTVmTiFMHfAynUvXNesAICNeuS14Pqvnb-Gw5GNK1JDrBb0rqPUPQ0dHolWQ9DIZb1UK6wucUF-Kf98",
+        AccessToken: "eyJhbGciOiJIUzI1NiIsImtpZCI6IjQiLCJ2ZXIiOiIxIiwidHlwIjoiSldUIn0.eyJhY2Nlc3NfdG9rZW4iOiJYODJzeFM3QjJrR0xKYllxTFE4dzhFb1YiLCJjbGllbnRfaWQiOiJidW0ybDhpcjhpam5qcWtlMXExaDBmbm8iLCJlaWQiOjUxMDAwOTI2Miwic3RhY2tfa2V5IjoiUzUwIiwicGxhdGZvcm1fdmVyc2lvbiI6MiwiY2xpZW50X3R5cGUiOiJTZXJ2ZXJUb1NlcnZlciIsInBpZCI6OTN9.zfv09oJOS1WOHdvobh9lhpY0eheCxxiL0way8reco7w._RK3kYwGwV6JXAvGSqWWO9eLLwZlxOhjf20Al1M273J8r5CgBHwR8SD30twXhMdH-iXyDWoxxzkpUxIeBioKU2yZSZoU9TZbeT3mbfEMTPuluJwuROIISuhXd7Bq8uv17H9vfjotMgXulpMsS1lHHAcWeE2O3A6JkP6xvX2",
     }
 
     // Assuming you have a way to create and configure a SOAP client
@@ -49,7 +49,33 @@ func main() {
 
     // Assuming the response includes a slice of results that you want to print
     fmt.Println("Retrieve Successful, Response Data:")
+    i:=0
     for _, result := range response.Results {
-        fmt.Printf("ID: %d \n", result.ID)
+        fmt.Printf("%d ID: %d Subscriber %v \n", i, result.ID, result)
+        i = i +1 
+    }
+
+
+
+    // Construct a RetrieveRequestMsg according to the SFMC API requirements
+    retrieveRequest2 := &sfmc.RetrieveRequestMsg{
+        RetrieveRequest: &sfmc.RetrieveRequest{
+            ObjectType: "DataExtension", // Assuming you want to retrieve subscriber data
+            Properties: []string{"Name", "Description", "IsSendable"}, // Specify the properties you need
+        },
+    } // Set up your request
+
+    response2, err2 := soapClient.Retrieve(retrieveRequest2)
+    if err2 != nil {
+        log.Fatalf("Error retrieving data: %v", err2)
+
+    }
+
+    // Assuming the response includes a slice of results that you want to print
+    fmt.Println("Retrieve Successful, Response Data:")
+    i=0
+    for _, result := range response2.Results {
+        fmt.Printf("%d ID: %d Email %v \n", i, result.ID, result)
+        i = i +1 
     }
 }
