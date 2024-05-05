@@ -1657,15 +1657,15 @@ type InteractionDefinition struct {
 	InteractionObjectID string `xml:"InteractionObjectID,omitempty"`
 }
 
-type InteractionBaseObject struct {
-	*APIObject
+	type InteractionBaseObject struct {
+		*APIObject
 
-	Name string `xml:"Name,omitempty"`
+		Name string `xml:"Name,omitempty"`
 
-	Description string `xml:"Description,omitempty"`
+		Description string `xml:"Description,omitempty"`
 
-	Keyword string `xml:"Keyword,omitempty"`
-}
+		Keyword string `xml:"Keyword,omitempty"`
+	}
 
 type PerformOptions struct {
 	*Options
