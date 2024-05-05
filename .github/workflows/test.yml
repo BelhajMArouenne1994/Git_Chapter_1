@@ -1,4 +1,4 @@
-name: Rune unit test suite
+name: Run unit tests
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 jobs:
 
   test:
-    name: Rune unit test suite
+    name: Run unit test suite
     runs-on: ubuntu-latest
 
     services:
@@ -39,7 +39,7 @@ jobs:
         which migrate
 
     - name: Run migrations
-      run: migrate -path db/migrations -database "postgresql://root:secret@localhost:5432/nps-postgres?sslmode=disable" -verbose up
+      run: migrate -path db/migrations -database "postgres://root:secret@localhost:5432/nps-postgres?sslmode=disable" -verbose up
 
 
 
