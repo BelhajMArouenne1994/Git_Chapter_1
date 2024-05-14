@@ -1,4 +1,4 @@
-package soap_sfmc
+package soap_to_rest_sfmc
 
 import (
 	"context"
@@ -88,7 +88,7 @@ func RetrieveDataExtensionFieldsByDataExtensionCustomerKey(ctx context.Context, 
 				"DataExtension.CustomerKey",
 			},
 			Filter: &SimpleFilterPart{
-				XMLName: xml.Name{Local: "Filter"},
+				XMLName:        xml.Name{Local: "Filter"},
 				XSIType:        "SimpleFilterPart",
 				Property:       "DataExtension.CustomerKey",
 				SimpleOperator: "equals",
@@ -132,8 +132,8 @@ func RetrieveDataExtensionFieldByDataExtensionCustomerKeyAndFieldCustomerKey(ctx
 			Filter: &ComplexFilterPart{
 				XMLName: xml.Name{Local: "Filter"},
 				XSIType: "ComplexFilterPart",
-				LeftOperand:  &SimpleFilterPart{
-					XMLName: xml.Name{Space: "http://exacttarget.com/wsdl/partnerAPI", Local: "LeftOperand"},
+				LeftOperand: &SimpleFilterPart{
+					XMLName:        xml.Name{Space: "http://exacttarget.com/wsdl/partnerAPI", Local: "LeftOperand"},
 					XSIType:        "SimpleFilterPart",
 					Property:       "DataExtension.CustomerKey",
 					SimpleOperator: "equals",
@@ -141,7 +141,7 @@ func RetrieveDataExtensionFieldByDataExtensionCustomerKeyAndFieldCustomerKey(ctx
 				},
 				LogicalOperator: LogicalOperatorAND,
 				RightOperand: &SimpleFilterPart{
-					XMLName: xml.Name{Space: "http://exacttarget.com/wsdl/partnerAPI", Local: "RightOperand"},
+					XMLName:        xml.Name{Space: "http://exacttarget.com/wsdl/partnerAPI", Local: "RightOperand"},
 					XSIType:        "SimpleFilterPart",
 					Property:       "CustomerKey",
 					SimpleOperator: "equals",

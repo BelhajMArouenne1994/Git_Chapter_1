@@ -1,4 +1,4 @@
-package soap_sfmc
+package soap_to_rest_sfmc
 
 import (
 	"context"
@@ -19,7 +19,6 @@ type RetrieveDataExtensionObjectResponseMsg struct {
 	Results []*RetrieveDataExtensionObjectResponseMsgAPIOBJECT `xml:"Results,omitempty"`
 }
 
-
 type RetrieveDataExtensionObjectResponseMsgAPIOBJECT struct {
 	*ObjectExtension
 
@@ -29,7 +28,6 @@ type RetrieveDataExtensionObjectResponseMsgAPIOBJECT struct {
 		Key []*APIProperty `nml:"key,omitempty"`
 	} `nml:"keys,omitempty"`
 }
-
 
 func RetrieveDataExtensionObject(ctx context.Context) (*RetrieveDataExtensionObjectResponseMsg, error) {
 

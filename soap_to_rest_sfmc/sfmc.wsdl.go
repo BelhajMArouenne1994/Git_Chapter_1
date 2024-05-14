@@ -1,4 +1,4 @@
-package soap_sfmc
+package soap_to_rest_sfmc
 
 import (
 	"encoding/xml"
@@ -6,7 +6,7 @@ import (
 
 	//util "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/util"
 	//types "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/types"
-	gosoap "github.com/hooklift/gowsdl/soap" 
+	gosoap "github.com/hooklift/gowsdl/soap"
 	//gosoap  "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/util" //for debugging
 )
 
@@ -1410,7 +1410,6 @@ type RetrieveRequest struct {
 	Options *RetrieveOptions `xml:"Options,omitempty"`
 }
 
-
 type RetrieveSingleRequest struct {
 	*Request
 
@@ -1480,7 +1479,7 @@ type SimpleFilterPart struct {
 	*filterPart
 
 	//XMLName xml.Name `xml:"http://exacttarget.com/wsdl/partnerAPI local"`
-	XMLName xml.Name `xml:""`  // No namespace or local part here; we'll set it dynamically
+	XMLName xml.Name `xml:""` // No namespace or local part here; we'll set it dynamically
 	XSIType string   `xml:"http://www.w3.org/2001/XMLSchema-instance type,attr"`
 
 	Property string `xml:"Property,omitempty"`
@@ -1509,9 +1508,9 @@ type ComplexFilterPart struct {
 	*filterPart
 
 	//XMLName xml.Name `xml:"http://exacttarget.com/wsdl/partnerAPI local"`
-	XMLName xml.Name `xml:""`  // No namespace or local part here; we'll set it dynamically
+	XMLName xml.Name `xml:""` // No namespace or local part here; we'll set it dynamically
 
-	XSIType string   `xml:"http://www.w3.org/2001/XMLSchema-instance type,attr"`
+	XSIType string `xml:"http://www.w3.org/2001/XMLSchema-instance type,attr"`
 
 	LeftOperand FilterPart `xml:"LeftOperand,omitempty"`
 

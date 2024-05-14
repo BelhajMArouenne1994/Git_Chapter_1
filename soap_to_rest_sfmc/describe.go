@@ -1,4 +1,4 @@
-package soap_sfmc
+package soap_to_rest_sfmc
 
 import (
 	"context"

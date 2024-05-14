@@ -1,10 +1,10 @@
-package soap_sfmc
+package soap_to_rest_sfmc
 
 import (
 	"context"
 	"encoding/xml"
-	types "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/types"
 
+	types "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/types"
 	//"fmt"
 	//"log"
 	//"net/http"
@@ -65,14 +65,14 @@ func RetrieveDataExtensions(ctx context.Context, optionalArgs ...string) (*Retri
 	// optional arguments
 	// first option : requestID, this value enable to get remaining result from previous request
 	var requestID string
-    if len(optionalArgs) > 0 {
-        requestID = optionalArgs[0] // Use the first optional argument as the filter
-    }
+	if len(optionalArgs) > 0 {
+		requestID = optionalArgs[0] // Use the first optional argument as the filter
+	}
 
 	// Construct a RetrieveRequestMsg according to the SFMC API requirements
 	retrieveRequest := &RetrieveRequestMsg{
 		RetrieveRequest: &RetrieveRequest{
-			ObjectType: "DataExtension", 
+			ObjectType:      "DataExtension",
 			ContinueRequest: requestID,
 			Properties: []string{
 
