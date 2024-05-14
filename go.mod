@@ -9,6 +9,7 @@ require (
 	github.com/hooklift/gowsdl v0.5.0
 	github.com/lib/pq v1.10.9
 	github.com/stretchr/testify v1.9.0
+	go.mongodb.org/mongo-driver v1.15.0
 )
 
 require (
@@ -41,7 +42,6 @@ require (
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect
-	go.mongodb.org/mongo-driver v1.15.0 // indirect
 	golang.org/x/arch v0.7.0 // indirect
 	golang.org/x/crypto v0.22.0 // indirect
 	golang.org/x/net v0.24.0 // indirect
