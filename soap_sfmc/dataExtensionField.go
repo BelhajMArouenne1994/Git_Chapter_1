@@ -3,6 +3,8 @@ package soap_sfmc
 import (
 	"context"
 	"encoding/xml"
+
+	types "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/types"
 	//"fmt"
 	//"log"
 	//"net/http"
@@ -41,7 +43,7 @@ func RetrieveDataExtensionFields(ctx context.Context) (*RetrieveDEFieldResponseM
 			ObjectType: "DataExtensionField", // Assuming you want to retrieve subscriber data
 			Properties: []string{
 				"ObjectID", "PartnerKey", "CustomerKey", "Name", "DefaultValue",
-				"Ordinal", "IsPrimaryKey", "FieldType", 
+				"Ordinal", "IsPrimaryKey", "FieldType",
 				"CreatedDate", "ModifiedDate",
 				"Client.ID",
 				"DataExtension.CustomerKey",
@@ -73,24 +75,24 @@ func RetrieveDataExtensionFields(ctx context.Context) (*RetrieveDEFieldResponseM
 	return response, nil
 }
 
-
-func RetrieveDataExtensionFieldsByDataExtensionCustomerKey(ctx context.Context, dataExtensionCustomerKey string) (*RetrieveDEFieldResponseMsg, error) {
+func RetrieveDataExtensionFieldsByDataExtensionCustomerKey(ctx context.Context, dataExtensionCustomerKey types.DataExtensionRequest) (*RetrieveDEFieldResponseMsg, error) {
 	// Construct a RetrieveRequestMsg according to the SFMC API requirements
 	retrieveRequest := &RetrieveRequestMsg{
 		RetrieveRequest: &RetrieveRequest{
 			ObjectType: "DataExtensionField", // Assuming you want to retrieve subscriber data
 			Properties: []string{
 				"ObjectID", "PartnerKey", "CustomerKey", "Name", "DefaultValue",
-				"Ordinal", "IsPrimaryKey", "FieldType", 
+				"Ordinal", "IsPrimaryKey", "FieldType",
 				"CreatedDate", "ModifiedDate",
 				"Client.ID",
 				"DataExtension.CustomerKey",
-			},	
+			},
 			Filter: &SimpleFilterPart{
+				XMLName: xml.Name{Local: "Filter"},
 				XSIType:        "SimpleFilterPart",
 				Property:       "DataExtension.CustomerKey",
 				SimpleOperator: "equals",
-				Value:          []string{dataExtensionCustomerKey},
+				Value:          []string{dataExtensionCustomerKey.CustomerKey},
 			},
 		},
 	}
@@ -111,10 +113,9 @@ func RetrieveDataExtensionFieldsByDataExtensionCustomerKey(ctx context.Context, 
 	return response, nil
 }
 
-
-
 // TO DO
-func RetrieveDataExtensionFieldsByDataExtensionID(ctx context.Context) (*RetrieveDEFieldResponseMsg, error) {
+
+func RetrieveDataExtensionFieldByDataExtensionCustomerKeyAndFieldCustomerKey(ctx context.Context, dataExtensionRequest types.DataExtensionRequest) (*RetrieveDEFieldResponseMsg, error) {
 
 	// Construct a RetrieveRequestMsg according to the SFMC API requirements
 	retrieveRequest := &RetrieveRequestMsg{
@@ -122,8 +123,30 @@ func RetrieveDataExtensionFieldsByDataExtensionID(ctx context.Context) (*Retriev
 			ObjectType: "DataExtensionField", // Assuming you want to retrieve subscriber data
 			Properties: []string{
 				// essayer de trouver une facon pour mettre aussi automatiquement toutes les propriétés de APIObject struct
-				"Client.ID", /*"CreatedDate", */"CustomerKey", "DataExtension.CustomerKey", "DefaultValue", "FieldType", "IsPrimaryKey",
-				"IsRequired", "MaxLength", /*"ModifiedDate",*/ "Name", "Ordinal", "Scale",
+				"ObjectID", "PartnerKey", "CustomerKey", "Name", "DefaultValue",
+				"Ordinal", "IsPrimaryKey", "FieldType",
+				"CreatedDate", "ModifiedDate",
+				"Client.ID",
+				"DataExtension.CustomerKey",
+			},
+			Filter: &ComplexFilterPart{
+				XMLName: xml.Name{Local: "Filter"},
+				XSIType: "ComplexFilterPart",
+				LeftOperand:  &SimpleFilterPart{
+					XMLName: xml.Name{Space: "http://exacttarget.com/wsdl/partnerAPI", Local: "LeftOperand"},
+					XSIType:        "SimpleFilterPart",
+					Property:       "DataExtension.CustomerKey",
+					SimpleOperator: "equals",
+					Value:          []string{dataExtensionRequest.CustomerKey},
+				},
+				LogicalOperator: LogicalOperatorAND,
+				RightOperand: &SimpleFilterPart{
+					XMLName: xml.Name{Space: "http://exacttarget.com/wsdl/partnerAPI", Local: "RightOperand"},
+					XSIType:        "SimpleFilterPart",
+					Property:       "CustomerKey",
+					SimpleOperator: "equals",
+					Value:          []string{dataExtensionRequest.DataExtensionFieldCustomerKey},
+				},
 			},
 		},
 	}

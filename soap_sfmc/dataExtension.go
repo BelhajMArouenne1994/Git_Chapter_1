@@ -3,6 +3,8 @@ package soap_sfmc
 import (
 	"context"
 	"encoding/xml"
+	types "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/types"
+
 	//"fmt"
 	//"log"
 	//"net/http"
@@ -105,7 +107,7 @@ func RetrieveDataExtensions(ctx context.Context, optionalArgs ...string) (*Retri
 	return response, nil
 }
 
-func RetrieveDataExtensionByCustomerKey(ctx context.Context, dataExtensionCustomerKey string) (*RetrieveDEResponseMsg, error) {
+func RetrieveDataExtensionByCustomerKey(ctx context.Context, dataExtensionCustomerKey types.DataExtensionRequest) (*RetrieveDEResponseMsg, error) {
 
 	// Construct a RetrieveRequestMsg according to the SFMC API requirements
 	retrieveRequest := &RetrieveRequestMsg{
@@ -127,7 +129,7 @@ func RetrieveDataExtensionByCustomerKey(ctx context.Context, dataExtensionCustom
 				XSIType:        "SimpleFilterPart",
 				Property:       "CustomerKey",
 				SimpleOperator: "equals",
-				Value:          []string{dataExtensionCustomerKey},
+				Value:          []string{dataExtensionCustomerKey.CustomerKey},
 			},
 		},
 	}

@@ -2409,16 +2409,6 @@ type Email struct {
 	PreHeader string `xml:"PreHeader,omitempty"`
 
 	IsApproved bool `xml:"IsApproved,omitempty"`
-
-	__AdditionalEmailAttribute1 string `xml:"__AdditionalEmailAttribute1,omitempty"`
-
-	__AdditionalEmailAttribute2 string `xml:"__AdditionalEmailAttribute2,omitempty"`
-
-	__AdditionalEmailAttribute3 string `xml:"__AdditionalEmailAttribute3,omitempty"`
-
-	__AdditionalEmailAttribute4 string `xml:"__AdditionalEmailAttribute4,omitempty"`
-
-	__AdditionalEmailAttribute5 string `xml:"__AdditionalEmailAttribute5,omitempty"`
 }
 
 type ContentArea struct {

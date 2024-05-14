@@ -468,6 +468,10 @@ func (s *Client) Call(soapAction string, request, response interface{}) error {
         return err
     }
 
+
+	// Print the request body for debugging purposes
+	fmt.Println(buffer.String())
+
     // Convert buffer to string and print it for debugging
     xmlString := buffer.String()
     fmt.Println("SOAP Request:", xmlString)

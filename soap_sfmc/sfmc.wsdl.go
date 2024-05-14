@@ -2,11 +2,12 @@ package soap_sfmc
 
 import (
 	"encoding/xml"
-	"fmt"
 	"time"
 
-	//util "github.com/BelhajMArouenne1994/SFMC_PROJECGIT_CHAPTER_1T_MAROUENNE/util"
-	gosoap "github.com/hooklift/gowsdl/soap"
+	//util "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/util"
+	//types "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/types"
+	gosoap "github.com/hooklift/gowsdl/soap" 
+	//gosoap  "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/util" //for debugging
 )
 
 // against "unused imports"
@@ -127,12 +128,12 @@ const (
 	SimpleOperatorsLessThanAnniversary SimpleOperators = "lessThanAnniversary"
 )
 
-type LogicalOperators string
+type LogicalOperator string
 
-const (
-	LogicalOperatorsOR LogicalOperators = "OR"
+var (
+	LogicalOperatorOR LogicalOperator = "OR"
 
-	LogicalOperatorsAND LogicalOperators = "AND"
+	LogicalOperatorAND LogicalOperator = "AND"
 )
 
 type SoapType string
@@ -1096,8 +1097,8 @@ type APIObject struct {
 	Client            *ClientID      `xml:"Client,omitempty" json:"client,omitempty"`
 	PartnerKey        string         `xml:"PartnerKey,omitempty" json:"partnerKey,omitempty"`
 	PartnerProperties []*APIProperty `xml:"PartnerProperties,omitempty" json:"partnerProperties,omitempty"`
-	CreatedDate       string      `xml:"CreatedDate,omitempty" json:"createdDate,omitempty"`
-	ModifiedDate      string      `xml:"ModifiedDate,omitempty" json:"modifiedDate,omitempty"`
+	CreatedDate       string         `xml:"CreatedDate,omitempty" json:"createdDate,omitempty"`
+	ModifiedDate      string         `xml:"ModifiedDate,omitempty" json:"modifiedDate,omitempty"`
 	ID                int32          `xml:"ID,omitempty" json:"id,omitempty"`
 	ObjectID          string         `xml:"ObjectID,omitempty" json:"objectId,omitempty"`
 	CustomerKey       string         `xml:"CustomerKey,omitempty" json:"customerKey,omitempty"`
@@ -1133,7 +1134,7 @@ type ClientID struct {
 */
 
 type ClientID struct {
-	ClientID        int32  `xml:"ClientID,omitempty" json:"clientId,omitempty"`
+	ClientID         int32  `xml:"ClientID,omitempty" json:"clientId,omitempty"`
 	ID               int32  `xml:"ID,omitempty" json:"id,omitempty"`
 	PartnerClientKey string `xml:"PartnerClientKey,omitempty" json:"partnerClientKey,omitempty"`
 	UserID           int32  `xml:"UserID,omitempty" json:"userId,omitempty"`
@@ -1386,9 +1387,9 @@ type RetrieveRequest struct {
 
 	Properties []string `xml:"Properties,omitempty"`
 
-	//Filter *FilterPart `xml:"Filter,omitempty"`
-	Filter   *SimpleFilterPart `xml:"http://exacttarget.com/wsdl/partnerAPI Filter,omitempty"`
-
+	Filter FilterPart `xml:"Filter,omitempty"`
+	//SimpleFilter   *SimpleFilterPart `xml:"http://exacttarget.com/wsdl/partnerAPI Filter,omitempty"`
+	//ComplexFilter   *ComplexFilterPart `xml:"http://exacttarget.com/wsdl/partnerAPI Filter,omitempty"`
 
 	RespondTo []*AsyncResponse `xml:"RespondTo,omitempty"`
 
@@ -1408,6 +1409,7 @@ type RetrieveRequest struct {
 
 	Options *RetrieveOptions `xml:"Options,omitempty"`
 }
+
 
 type RetrieveSingleRequest struct {
 	*Request
@@ -1468,15 +1470,18 @@ type Query struct {
 }
 
 type FilterPart interface {
-	ApplyFilter() string // This is a demonstration method
+	ApplyFilter() string
+}
+
+type filterPart struct {
 }
 
 type SimpleFilterPart struct {
-	//*FilterPart
+	*filterPart
 
-	XMLName        xml.Name `xml:"http://exacttarget.com/wsdl/partnerAPI Filter"`
-	XSIType        string   `xml:"http://www.w3.org/2001/XMLSchema-instance type,attr"`
-
+	//XMLName xml.Name `xml:"http://exacttarget.com/wsdl/partnerAPI local"`
+	XMLName xml.Name `xml:""`  // No namespace or local part here; we'll set it dynamically
+	XSIType string   `xml:"http://www.w3.org/2001/XMLSchema-instance type,attr"`
 
 	Property string `xml:"Property,omitempty"`
 
@@ -1487,13 +1492,13 @@ type SimpleFilterPart struct {
 	DateValue []string `xml:"DateValue,omitempty"`
 }
 
-func (sf *SimpleFilterPart) ApplyFilter() string {
-	// Implementation details here
-	return fmt.Sprintf("Applying simple filter on %s = %s", sf.Property, sf.Value)
+func (s *SimpleFilterPart) ApplyFilter() string {
+	// Logique de filtrage spécifique
+	return "SimpleFilterPart"
 }
 
 type TagFilterPart struct {
-	//*FilterPart
+	*filterPart
 
 	Tags struct {
 		Tag []string `xml:"Tag,omitempty"`
@@ -1501,17 +1506,27 @@ type TagFilterPart struct {
 }
 
 type ComplexFilterPart struct {
-	//*FilterPart
+	*filterPart
 
-	LeftOperand *FilterPart `xml:"LeftOperand,omitempty"`
+	//XMLName xml.Name `xml:"http://exacttarget.com/wsdl/partnerAPI local"`
+	XMLName xml.Name `xml:""`  // No namespace or local part here; we'll set it dynamically
 
-	LogicalOperator *LogicalOperators `xml:"LogicalOperator,omitempty"`
+	XSIType string   `xml:"http://www.w3.org/2001/XMLSchema-instance type,attr"`
 
-	RightOperand *FilterPart `xml:"RightOperand,omitempty"`
+	LeftOperand FilterPart `xml:"LeftOperand,omitempty"`
+
+	LogicalOperator LogicalOperator `xml:"LogicalOperator,omitempty"`
+
+	RightOperand FilterPart `xml:"RightOperand,omitempty"`
 
 	AdditionalOperands struct {
-		Operand []*FilterPart `xml:"Operand,omitempty"`
+		Operand []FilterPart `xml:"Operand,omitempty"`
 	} `xml:"AdditionalOperands,omitempty"`
+}
+
+func (c *ComplexFilterPart) ApplyFilter() string {
+	// Logique de filtrage spécifique
+	return "ComplexFilterPart"
 }
 
 type ArrayOfObjectDefinitionRequest struct {
@@ -3593,8 +3608,8 @@ type ReportActivity struct {
 type DataExtension struct {
 	*APIObject
 
-	ObjectID          string         `xml:"ObjectID,omitempty" json:"objectId,omitempty"`
-	
+	ObjectID string `xml:"ObjectID,omitempty" json:"objectId,omitempty"`
+
 	Name string `xml:"Name,omitempty"`
 
 	Description string `xml:"Description,omitempty"`
@@ -3636,13 +3651,12 @@ type DataExtension struct {
 type DataExtensionField struct {
 	*PropertyDefinition `json:"propertyDefinition,omitempty"`
 
-	Ordinal     int32                      `xml:"Ordinal,omitempty" json:"ordinal,omitempty"`
-	IsPrimaryKey bool                      `xml:"IsPrimaryKey,omitempty" json:"isPrimaryKey,omitempty"`
-	FieldType   *DataExtensionFieldType   `xml:"FieldType,omitempty" json:"fieldType,omitempty"`
-	DataExtension *DataExtension           `xml:"DataExtension,omitempty" json:"dataExtension,omitempty"`
-	StorageType *DataExtensionFieldStorageType `xml:"StorageType,omitempty" json:"storageType,omitempty"`
+	Ordinal       int32                          `xml:"Ordinal,omitempty" json:"ordinal,omitempty"`
+	IsPrimaryKey  bool                           `xml:"IsPrimaryKey,omitempty" json:"isPrimaryKey,omitempty"`
+	FieldType     *DataExtensionFieldType        `xml:"FieldType,omitempty" json:"fieldType,omitempty"`
+	DataExtension *DataExtension                 `xml:"DataExtension,omitempty" json:"dataExtension,omitempty"`
+	StorageType   *DataExtensionFieldStorageType `xml:"StorageType,omitempty" json:"storageType,omitempty"`
 }
-
 
 type DataExtensionTemplate struct {
 	*APIObject
@@ -4821,13 +4835,16 @@ type Soap interface {
 
 	/* Retrieve objects */
 	Retrieve(request *RetrieveRequestMsg) (*RetrieveResponseMsg, error)
-		// Subscribers 
-		RetrieveRecipients(request *RetrieveRequestMsg) (*RetrieveRecipientResponseMsg, error)
-		RetrieveRecipient(request *RetrieveRequestMsg) (*RetrieveRecipientResponseMsg, error)
-		// Data Extensions 
-		RetrieveDataExtensions(request *RetrieveRequestMsg) (*RetrieveDEResponseMsg, error)
-		RetrieveDataExtensionByCustomerKey(request *RetrieveRequestMsg, dataExtensionCustomerKey string) (*RetrieveDEResponseMsg, error)
-		RetrieveDataExtensionFieldsByDataExtensionID(request *RetrieveRequestMsg, dataExtensionCustomerKey string) (*RetrieveDEResponseMsg, error)
+	// Subscribers
+	RetrieveRecipients(request *RetrieveRequestMsg) (*RetrieveRecipientResponseMsg, error)
+	RetrieveRecipient(request *RetrieveRequestMsg) (*RetrieveRecipientResponseMsg, error)
+
+	// Data Extensions
+	RetrieveDataExtensions(request *RetrieveRequestMsg) (*RetrieveDEResponseMsg, error)
+	//RetrieveDataExtensionByCustomerKey(request *RetrieveRequestMsg, dataExtensionCustomerKey types.DataExtensionRequest) (*RetrieveDEResponseMsg, error)
+	RetrieveDataExtensionByCustomerKey(request *RetrieveRequestMsg) (*RetrieveDEResponseMsg, error)
+	//RetrieveDataExtensionFieldsByDataExtensionCustomerKey(request *RetrieveRequestMsg, dataExtensionCustomerKey types.DataExtensionRequest) (*RetrieveDEResponseMsg, error)
+	RetrieveDataExtensionFieldsByDataExtensionCustomerKey(request *RetrieveRequestMsg) (*RetrieveDEFieldResponseMsg, error)
 
 	RetrieveDataExtensionFields(request *RetrieveRequestMsg) (*RetrieveDEFieldResponseMsg, error)
 	RetrieveDataExtensionObject(request *RetrieveRequestMsg) (*RetrieveDataExtensionObjectResponseMsg, error)
@@ -4921,7 +4938,8 @@ func (service *soap) RetrieveDataExtensions(request *RetrieveRequestMsg) (*Retri
 	return response, nil
 }
 
-func (service *soap) RetrieveDataExtensionByCustomerKey(request *RetrieveRequestMsg, dataExtensionCustomerKey string) (*RetrieveDEResponseMsg, error) {
+// func (service *soap) RetrieveDataExtensionByCustomerKey(request *RetrieveRequestMsg, dataExtensionCustomerKey types.DataExtensionRequest) (*RetrieveDEResponseMsg, error) {
+func (service *soap) RetrieveDataExtensionByCustomerKey(request *RetrieveRequestMsg) (*RetrieveDEResponseMsg, error) {
 	response := new(RetrieveDEResponseMsg)
 	err := service.client.Call("Retrieve", request, response)
 	if err != nil {
@@ -4930,21 +4948,19 @@ func (service *soap) RetrieveDataExtensionByCustomerKey(request *RetrieveRequest
 
 	return response, nil
 }
-
-func (service *soap) RetrieveDataExtensionFieldsByDataExtensionID(request *RetrieveRequestMsg, dataExtensionCustomerKey string) (*RetrieveDEResponseMsg, error) {
-	response := new(RetrieveDEResponseMsg)
-	err := service.client.Call("Retrieve", request, response)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
-}
-
-
-
 
 func (service *soap) RetrieveDataExtensionFields(request *RetrieveRequestMsg) (*RetrieveDEFieldResponseMsg, error) {
+	response := new(RetrieveDEFieldResponseMsg)
+	err := service.client.Call("Retrieve", request, response)
+	if err != nil {
+		return nil, err
+	}
+
+	return response, nil
+}
+
+// func (service *soap) RetrieveDataExtensionFieldsByDataExtensionCustomerKey(request *RetrieveRequestMsg, dataExtensionCustomerKey types.DataExtensionRequest) (*RetrieveDEFieldResponseMsg, error) {
+func (service *soap) RetrieveDataExtensionFieldsByDataExtensionCustomerKey(request *RetrieveRequestMsg) (*RetrieveDEFieldResponseMsg, error) {
 	response := new(RetrieveDEFieldResponseMsg)
 	err := service.client.Call("Retrieve", request, response)
 	if err != nil {
@@ -4974,7 +4990,6 @@ func (service *soap) RetrieveDataExtensionObject(request *RetrieveRequestMsg) (*
 
 	return response, nil
 }
-
 
 func (service *soap) Delete(request *DeleteRequest) (*DeleteResponse, error) {
 	response := new(DeleteResponse)

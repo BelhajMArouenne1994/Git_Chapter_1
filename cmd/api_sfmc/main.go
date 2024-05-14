@@ -5,16 +5,13 @@ import (
 	"net/http"
 
 	soap_sfmc "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_sfmc"
+	types "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/types"
+
 	"github.com/gin-gonic/gin"
 )
 
 type Server struct {
 	router *gin.Engine
-}
-
-type DataExtensionRequest struct {
-	//ID          string `uri:"id" binding:"required,uuid"`
-	CustomerKey string `uri:"customerKey" binding:"required"`
 }
 
 func NewServer() *Server {
@@ -113,12 +110,11 @@ func NewServer() *Server {
 		c.JSON(http.StatusOK, gin.H{"message": result})
 	})
 	router.GET("/DataExtensions/:customerKey", func(c *gin.Context) {
-		var dataExtensionRequest = &DataExtensionRequest{}
+		var dataExtensionRequest = &types.DataExtensionRequest{}
 		if err := c.ShouldBindUri(dataExtensionRequest); err != nil {
 			c.JSON(400, gin.H{"message": err.Error()})
 			return
 		}
-		fmt.Println("CustomerKey: " + dataExtensionRequest.CustomerKey)
 
 		// Convert *gin.Context to context.Context
 		ctx := c.Request.Context()
@@ -126,7 +122,7 @@ func NewServer() *Server {
 		// Call the original function
 		var result *soap_sfmc.RetrieveDEResponseMsg
 		var err error
-		result, err = soap_sfmc.RetrieveDataExtensionByCustomerKey(ctx, dataExtensionRequest.CustomerKey)
+		result, err = soap_sfmc.RetrieveDataExtensionByCustomerKey(ctx, *dataExtensionRequest)
 		if err != nil {
 			// Handle error
 			errorResponse(c, err)
@@ -138,13 +134,11 @@ func NewServer() *Server {
 		c.JSON(http.StatusOK, gin.H{"message": result})
 	})
 	router.GET("/DataExtensions/:customerKey/DataExtensionFields", func(c *gin.Context) {
-		var dataExtensionRequest = &DataExtensionRequest{}
+		var dataExtensionRequest = &types.DataExtensionRequest{}
 		if err := c.ShouldBindUri(&dataExtensionRequest); err != nil {
 			c.JSON(400, gin.H{"message": err.Error()})
 			return
 		}
-
-		fmt.Println("CustomerKey: " + dataExtensionRequest.CustomerKey)
 
 		// Convert *gin.Context to context.Context
 		ctx := c.Request.Context()
@@ -152,7 +146,35 @@ func NewServer() *Server {
 		// Call the original function
 		var result *soap_sfmc.RetrieveDEFieldResponseMsg
 		var err error
-		result, err = soap_sfmc.RetrieveDataExtensionFieldsByDataExtensionCustomerKey(ctx, dataExtensionRequest.CustomerKey)
+		result, err = soap_sfmc.RetrieveDataExtensionFieldsByDataExtensionCustomerKey(ctx, *dataExtensionRequest)
+		if err != nil {
+			// Handle error
+			errorResponse(c, err)
+			return
+		}
+
+		// If needed, use ginCtx for further processing or respond directly
+		// For example, assuming a successful operation:
+		c.JSON(http.StatusOK, gin.H{"message": result})
+	})
+	router.GET("/DataExtensions/:customerKey/DataExtensionFields/:dataExtensionFieldsCustomerKey", func(c *gin.Context) {
+		var dataExtensionRequest = &types.DataExtensionRequest{}
+		if err := c.ShouldBindUri(&dataExtensionRequest); err != nil {
+			c.JSON(400, gin.H{"message": err.Error()})
+			return
+		}
+
+
+		fmt.Println("CustomerKey: " + dataExtensionRequest.CustomerKey)
+		fmt.Println("CustomerKey: " + dataExtensionRequest.DataExtensionFieldCustomerKey)
+
+		// Convert *gin.Context to context.Context
+		ctx := c.Request.Context()
+
+		// Call the original function
+		var result *soap_sfmc.RetrieveDEFieldResponseMsg
+		var err error
+		result, err = soap_sfmc.RetrieveDataExtensionFieldByDataExtensionCustomerKeyAndFieldCustomerKey(ctx, *dataExtensionRequest)
 		if err != nil {
 			// Handle error
 			errorResponse(c, err)

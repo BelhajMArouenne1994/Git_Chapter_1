@@ -10,6 +10,8 @@ import (
 
 	util "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/util"
 	gosoap "github.com/hooklift/gowsdl/soap"
+	//gosoap "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/util"
+
 )
 
 // Assuming the previously shared structs and types...
