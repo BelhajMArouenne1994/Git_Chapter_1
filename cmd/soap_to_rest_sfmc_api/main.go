@@ -1,4 +1,4 @@
-package api
+package soap_to_rest_sfmc_api
 
 import (
 	"fmt"
