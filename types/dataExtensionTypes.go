@@ -21,19 +21,19 @@ type DataExtensionFieldsRequest struct {
 
 // Define mongo_db Types
 type DataExtensionMongoDB struct {
-	ID                         primitive.ObjectID          `bson:"_id,omitempty"`
-	ObjectID                   string                      `bson:"objectId"`
-	Client                     Client                      `bson:"client"`
-	CreatedDate                time.Time                   `bson:"createdDate"`
-	ModifiedDate               time.Time                   `bson:"modifiedDate"`
-	CustomerKey                string                      `bson:"customerKey"`
-	Name                       string                      `bson:"name"`
-	IsSendable                 bool                        `bson:"isSendable"`
-	SendableDataExtensionField DataExtensionFieldMongoDB   `bson:"sendableDataExtensionField"`
-	SendableSubscriberField    SubscriberFieldMongoDB      `bson:"sendableSubscriberField"`
-	CategoryID                 int                         `bson:"categoryID"`
-	Status                     string                      `bson:"status"`
-	Fields                     []DataExtensionFieldMongoDB `bson:"fields"`
+	ID                         primitive.ObjectID          `bson:"_id,omitempty" json:"_id,omitempty"`
+	ObjectID                   string                      `bson:"objectId" json:"objectId, required"`
+	Client                     Client                      `bson:"client" json:"client"`
+	CreatedDate                time.Time                   `bson:"createdDate" json:"createdDate"`
+	ModifiedDate               time.Time                   `bson:"modifiedDate" json:"modifiedDate"`
+	CustomerKey                string                      `bson:"customerKey" json:"customerKey"`
+	Name                       string                      `bson:"name" json:"name"`
+	IsSendable                 bool                        `bson:"isSendable" json:"isSendable"`
+	SendableDataExtensionField DataExtensionFieldMongoDB   `bson:"sendableDataExtensionField" json:"sendableDataExtensionField"`
+	SendableSubscriberField    SubscriberFieldMongoDB      `bson:"sendableSubscriberField" json:"sendableSubscriberField"`
+	CategoryID                 int                         `bson:"categoryID" json:"categoryID"`
+	Status                     string                      `bson:"status" json:"status"`
+	Fields                     []DataExtensionFieldMongoDB `bson:"fields" json:"fields"`
 }
 
 type SubscriberFieldMongoDB struct {

@@ -1,10 +1,36 @@
 package soap_to_rest_sfmc_handlers
 
 import (
-	"net/http"
-
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
+
+// HttpError structure to represent an HTTP error
+type HttpError struct {
+	Description string `json:"description,omitempty"`
+	Metadata    string `json:"metadata,omitempty"`
+	StatusCode  int    `json:"statusCode"`
+}
+
+// DataExtensionError structure embedding HttpError
+type DataExtensionError struct {
+	*HttpError
+}
+
+// Implementing the error interface for HttpError
+func (e HttpError) Error() string {
+	return fmt.Sprintf("description: %s, metadata: %s", e.Description, e.Metadata)
+}
+
+// CreateNewHttpError creates a new instance of HttpError
+func CreateNewHttpError(description, metadata string, statusCode int) *HttpError {
+	return &HttpError{
+		Description: description,
+		Metadata:    metadata,
+		StatusCode:  statusCode,
+	}
+}
 
 // Handler chains together multiple gin.HandlerFunc
 func Handler(handlers ...gin.HandlerFunc) gin.HandlerFunc {
@@ -18,6 +44,24 @@ func Handler(handlers ...gin.HandlerFunc) gin.HandlerFunc {
 		}
 	}
 }
+
+// Additional middleware to demonstrate chaining
+func AuthMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		token := c.GetHeader("Authorization")
+		if token == "" {
+			err := &gin.Error{
+				Err:  CreateNewHttpError("Unauthorized", "Missing Authorization Header", http.StatusUnauthorized),
+				Type: gin.ErrorTypePublic,
+			}
+			c.Errors = append(c.Errors, err)
+			c.Abort() // Abort the context if the header is not present
+		} else {
+			c.Next() // Continue to the next middleware/handler if the header is correct
+		}
+	}
+}
+
 
 // HeaderHandler checks the Content-Type of the request and adds an error if it's not application/json
 func HeaderHandler() gin.HandlerFunc {
@@ -55,19 +99,3 @@ func ErrorHandler() gin.HandlerFunc {
 	}
 }
 
-// Additional middleware to demonstrate chaining
-func AuthMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		token := c.GetHeader("Authorization")
-		if token == "" {
-			err := &gin.Error{
-				Err:  CreateNewHttpError("Unauthorized", "Missing Authorization Header", http.StatusUnauthorized),
-				Type: gin.ErrorTypePublic,
-			}
-			c.Errors = append(c.Errors, err)
-			c.Abort() // Abort the context if the header is not present
-		} else {
-			c.Next() // Continue to the next middleware/handler if the header is correct
-		}
-	}
-}

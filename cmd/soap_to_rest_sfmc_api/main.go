@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
+
 	soap_to_rest_sfmc "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc"
 	soap_to_rest_sfmc_handlers "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc_handlers"
 	types "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/types"
-
-	"github.com/gin-gonic/gin"
+	mongo_db_handlers "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/mongo_db_handlers"
 )
 
 type Server struct {
@@ -27,10 +28,13 @@ func NewServer() *Server {
 	{
 		// Utilisation de Use pour appliquer les middlewares
 		dataExtensionsRoute.Use(
-			soap_to_rest_sfmc_handlers.HeaderHandler(),
+			//soap_to_rest_sfmc_handlers.HeaderHandler(),
 			soap_to_rest_sfmc_handlers.AuthMiddleware(),
 		)
 		// Data Extension methods
+		dataExtensionsRoute.POST("/", mongo_db_handlers.CreateDataExtension())
+
+
 		dataExtensionsRoute.GET("/", func(c *gin.Context) {
 			// Convert *gin.Context to context.Context
 			ctx := c.Request.Context()
@@ -124,6 +128,7 @@ func NewServer() *Server {
 			// For example, assuming a successful operation:
 			c.JSON(http.StatusOK, gin.H{"message": result})
 		})
+	
 	}
 
 	// Wrap the call to soap_to_rest_sfmc.GetRecipients with a function that adapts it to Gin's expected handler signature
