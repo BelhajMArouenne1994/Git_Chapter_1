@@ -112,68 +112,38 @@ func ErrorHandler() gin.HandlerFunc {
 
 
 
-func CreateDataExtensionOLD() gin.HandlerFunc {
+func CreateDataExtension() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Next()
-
 		newDataExtension := types.DataExtensionMongoDB{}
 
 		if err := c.ShouldBindBodyWith(&newDataExtension, binding.JSON); err != nil {
 			c.JSON(400, gin.H{"Error": err.Error()})
 			return
 		}
-		fmt.Println("222222222222222 Pinged your deployment. You successfully connected to MongoDB!")
-
-		client, ctx, _ := mongo_db_client.ConnectDB()
-
-
-		fmt.Println("3333333333 Pinged your deployment. You successfully connected to MongoDB!")
-
-		coll := client.Database("sfmcMarouenne").Collection("DataExtension")
-		fmt.Println("44444444444444 Pinged your deployment. You successfully connected to MongoDB!")
-
-
-		result, err := coll.InsertOne(ctx, newDataExtension)
-		fmt.Println(newDataExtension)
-		fmt.Println("errrrrrr" + err.Error())
-
-
-		fmt.Println("555555555555555555555 Pinged your deployment. You successfully connected to MongoDB!")
-
-		fmt.Printf("Inserted document with _id: %v\n", result.InsertedID)
-
-
-
-		if err != nil {
-			c.JSON(400, gin.H{"message": newDataExtension})
-			c.Next() // Continue to the next middleware/handler if the header is correct
-		}
-
-
-	}	
-}
-
-
-func CreateDataExtension() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		newDataExtension := types.DataExtensionMongoDB{}
-
-		if err := c.ShouldBindBodyWith(&newDataExtension, binding.JSON); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
 
 		client, ctx, cancel := mongo_db_client.ConnectDB()
 		defer cancel()
 
-		coll := client.Database("sfmcMarouenne").Collection("DataExtension")
+		collDE := client.Database("sfmcMarouenne").Collection("DataExtension")
+		result, err := collDE.InsertOne(ctx, newDataExtension)
 
-		result, err := coll.InsertOne(ctx, newDataExtension)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
+
+		collDEFields := client.Database("sfmcMarouenne").Collection("DataExtensionFields")
+		newfields := make([]interface{}, len(newDataExtension.Fields))
+		for i := range newDataExtension.Fields {
+			newfields[i] = newDataExtension.Fields[i]
 		}
 
+		_, err2 := collDEFields.InsertMany(ctx,newfields)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			c.Next() // Continue to the next middleware/handler if the header is correct
+		}
+		if err2 != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			c.Next() // Continue to the next middleware/handler if the header is correct
+		}
 		c.JSON(http.StatusOK, gin.H{"message": "Data extension created", "insertedID": result.InsertedID})
-	}
+	}	
 }

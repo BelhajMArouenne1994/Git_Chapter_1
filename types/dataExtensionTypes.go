@@ -22,11 +22,11 @@ type DataExtensionFieldsRequest struct {
 // Define mongo_db Types
 type DataExtensionMongoDB struct {
 	ID                         primitive.ObjectID          `bson:"_id,omitempty" json:"_id,omitempty"`
-	ObjectID                   string                      `bson:"objectId" json:"objectId, required"`
+	ObjectID                   string                      `bson:"objectId" json:"objectId" binding:"required"`
 	Client                     Client                      `bson:"client" json:"client"`
-	CreatedDate                time.Time                   `bson:"createdDate" json:"createdDate"`
+	CreatedDate                time.Time                   `bson:"createdDate" json:"createdDate" binding:"required"`
 	ModifiedDate               time.Time                   `bson:"modifiedDate" json:"modifiedDate"`
-	CustomerKey                string                      `bson:"customerKey" json:"customerKey"`
+	CustomerKey                string                      `bson:"customerKey" json:"customerKey" binding:"required"`
 	Name                       string                      `bson:"name" json:"name"`
 	IsSendable                 bool                        `bson:"isSendable" json:"isSendable"`
 	SendableDataExtensionField DataExtensionFieldMongoDB   `bson:"sendableDataExtensionField" json:"sendableDataExtensionField"`
@@ -43,13 +43,13 @@ type SubscriberFieldMongoDB struct {
 }
 
 type DataExtensionFieldMongoDB struct {
-	ID           primitive.ObjectID `bson:"_id,omitempty"`
-	ObjectID     string             `bson:"objectId"`
-	CustomerKey  string             `bson:"customerKey"`
-	Name         string             `bson:"name"`
-	DataType     string             `bson:"dataType"`
-	IsPrimaryKey bool               `bson:"isPrimaryKey"`
-	FieldType    string             `bson:"fieldType"`
+	ID           primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
+	ObjectID     string             `bson:"objectId" json:"objectId"`
+	CustomerKey  string             `bson:"customerKey" json:"customerKey"`
+	Name         string             `bson:"name" json:"name"`
+	DataType     string             `bson:"dataType" json:"dataType"`
+	IsPrimaryKey bool               `bson:"isPrimaryKey" json:"isPrimaryKey"`
+	FieldType    string             `bson:"fieldType" json:"fieldType"`
 	// ................
 	// ................
 	// ................
