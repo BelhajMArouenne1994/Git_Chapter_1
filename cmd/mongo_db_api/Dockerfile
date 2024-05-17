@@ -17,23 +17,28 @@ RUN ls -l /app   # Diagnostic: Lister le contenu après la copie du reste du cod
 
 WORKDIR /app/cmd/mongo_db_api
 RUN ls -l /app/cmd/mongo_db_api  # Diagnostic: Lister le contenu avant la construction du binaire
-RUN go build -o ./mongo_db_api
+
+RUN go build -o /mongo_db_api
 RUN ls -l /app/cmd/mongo_db_api  # Diagnostic: Lister le contenu après la construction du binaire
+
+
+
 
 FROM alpine:latest
 
 WORKDIR /root/
 
 # Copier le binaire depuis le stage de build
-COPY --from=build /app/cmd/mongo_db_api/mongo_db_api .
+COPY --from=build . .
 
 # Diagnostic: Liste le contenu du répertoire de travail
-RUN ls -l /root
+RUN ls -l ./
 
 # Ajouter les permissions d'exécution au binaire
 RUN chmod +x ./mongo_db_api
 
 RUN ls -l ./
+
 
 EXPOSE 8081
 
