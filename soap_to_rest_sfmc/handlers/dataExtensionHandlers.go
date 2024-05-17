@@ -1,9 +1,19 @@
-package soap_to_rest_sfmc_handlers
+package handlers
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+
+
+	"github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/models"
+	"github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/services"
+
+	mongo_db_Service "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/mongo_db/services"
+	transform_services "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/transform"
+
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // HttpError structure to represent an HTTP error
@@ -30,6 +40,14 @@ func CreateNewHttpError(description, metadata string, statusCode int) *HttpError
 		Metadata:    metadata,
 		StatusCode:  statusCode,
 	}
+}
+
+
+// Assuming mongoService is initialized and passed to the handler
+var mongoService *mongo_db_Service.MongoService
+
+func InitMongoService(client *mongo.Client, dbName string) {
+	mongoService = mongo_db_Service.NewMongoService(client, dbName)
 }
 
 // Handler chains together multiple gin.HandlerFunc
@@ -61,7 +79,6 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 	}
 }
-
 
 // HeaderHandler checks the Content-Type of the request and adds an error if it's not application/json
 func HeaderHandler() gin.HandlerFunc {
@@ -99,3 +116,124 @@ func ErrorHandler() gin.HandlerFunc {
 	}
 }
 
+
+func RetrieveDataExtensionsHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx := c.Request.Context()
+
+		result, err := services.RetrieveDataExtensions(ctx)
+		if err != nil {
+			err := &gin.Error{
+				Err:  CreateNewHttpError(err.Error(), err.Error(), 400),
+				Type: gin.ErrorTypePublic,
+			}
+			c.Errors = append(c.Errors, err)
+			c.Abort() // Abort the context if the header is not application/json			return
+		}
+
+		// You can now call MongoDB service to store the retrieved data
+		//mongoService.StoreDataExtension(result)
+
+		c.JSON(http.StatusOK, gin.H{"message": result})
+	}
+}
+
+func RetrieveDataExtensionByCustomerKeyHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var dataExtensionRequest models.DataExtensionRequest
+		if err := c.ShouldBindUri(&dataExtensionRequest); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+			return
+		}
+
+		ctx := c.Request.Context()
+
+		sfmcResponse, err := services.RetrieveDataExtensionByCustomerKey(ctx, dataExtensionRequest)
+		if err != nil {
+			err := &gin.Error{
+				Err:  CreateNewHttpError(err.Error(), err.Error(), 400),
+				Type: gin.ErrorTypePublic,
+			}
+			c.Errors = append(c.Errors, err)
+			c.Abort() // Abort the context if the header is not application/json			return
+		}
+
+		transformedData, err := transform_services.TransformToDataExtensionMongoDB(sfmcResponse)
+		if err != nil {
+			err := &gin.Error{
+				Err:  CreateNewHttpError(err.Error(), err.Error(), 400),
+				Type: gin.ErrorTypePublic,
+			}
+			c.Errors = append(c.Errors, err)
+			c.Abort() // Abort the context if the header is not application/json			return
+		}
+	
+        // Store the transformed data in MongoDB
+        for _, data := range transformedData {
+            result, err := mongoService.StoreDataExtension(ctx, data)
+            if err != nil {
+				err := &gin.Error{
+					Err:  CreateNewHttpError(err.Error(), err.Error(), 400),
+					Type: gin.ErrorTypePublic,
+				}
+				c.Errors = append(c.Errors, err)
+				c.Abort() // Abort the context if the header is not application/json			return
+            }
+			c.JSON(http.StatusOK, gin.H{"message": result.InsertedID})
+        }
+	}
+}
+
+func CreateDataExtensionHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var dataExtensionRequest models.DataExtensionRequest
+		if err := c.ShouldBindUri(&dataExtensionRequest); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+			return
+		}
+
+		ctx := c.Request.Context()
+
+		result, err := services.RetrieveDataExtensionByCustomerKey(ctx, dataExtensionRequest)
+		if err != nil {
+			err := &gin.Error{
+				Err:  CreateNewHttpError(err.Error(), err.Error(), 400),
+				Type: gin.ErrorTypePublic,
+			}
+			c.Errors = append(c.Errors, err)
+			c.Abort() // Abort the context if the header is not application/json			return
+		}
+
+		// You can now call MongoDB service to store the retrieved data
+		// mongoService.StoreDataExtensionByCustomerKey(result)
+
+		c.JSON(http.StatusOK, gin.H{"message": result})
+	}
+}
+
+func RetrieveDataExtensionFieldByCustomerKeyAndFieldKeyHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var dataExtensionRequest models.DataExtensionRequest
+		if err := c.ShouldBindUri(&dataExtensionRequest); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+			return
+		}
+
+		ctx := c.Request.Context()
+
+		result, err := services.RetrieveDataExtensionByCustomerKey(ctx, dataExtensionRequest)
+		if err != nil {
+			err := &gin.Error{
+				Err:  CreateNewHttpError(err.Error(), err.Error(), 400),
+				Type: gin.ErrorTypePublic,
+			}
+			c.Errors = append(c.Errors, err)
+			c.Abort() // Abort the context if the header is not application/json			return
+		}
+
+		// You can now call MongoDB service to store the retrieved data
+		// mongoService.StoreDataExtensionByCustomerKey(result)
+
+		c.JSON(http.StatusOK, gin.H{"message": result})
+	}
+}

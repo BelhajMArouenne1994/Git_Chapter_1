@@ -4,8 +4,23 @@
 
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
+#tasks:
+#  - init: go get && go build ./... && go test ./... && make
+#    command: go run .
+
+
 tasks:
-  - init: go get && go build ./... && go test ./... && make
-    command: go run .
+  - init: docker-compose build
+  - command: docker-compose up
 
+ports:
+  - port: 8080
+    onOpen: open-preview
+  - port: 8081
+    onOpen: open-preview
+  - port: 27017
+    onOpen: ignore
 
+vscode:
+  extensions:
+    - ms-azuretools.vscode-docker

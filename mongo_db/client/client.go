@@ -24,9 +24,8 @@ func ConnectDB() (*mongo.Client, context.Context, context.CancelFunc) {
 		panic(err)
 	}
 
-		
 	// Send a ping to confirm a successful connection
-	if err := client.Database("admin").RunCommand(context.TODO(), bson.D{{"ping", 1}}).Err(); err != nil {
+	if err := client.Database("admin").RunCommand(context.TODO(), bson.D{{Key: "ping", Value: 1}}).Err(); err != nil {
 		panic(err)
 	}
 
