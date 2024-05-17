@@ -1,23 +1,31 @@
 # syntax=docker/dockerfile:1
 
-FROM golang:1.18-alpine AS build
+FROM golang:1.22.2-alpine3.19 AS build
 
 WORKDIR /app
 
-COPY go.mod go.sum ./
+# Copier go.mod et go.sum depuis la racine du projet
+COPY ../../go.mod ../../go.sum ./
 RUN go mod download
 
-COPY . ./
+# Copier le reste du code
+COPY ../../ ./
 
 WORKDIR /app/cmd/soap_to_rest_sfmc_api
 RUN go build -o /sfmc_api
 
-# Use a minimal image for the final container
 FROM alpine:latest
 
 WORKDIR /root/
 
+# Copier le binaire construit dans l'image finale
 COPY --from=build /sfmc_api .
+
+# Diagnostic: Liste le contenu du répertoire
+RUN ls -l  ./
+
+# Ajoute les permissions d'exécution au binaire
+RUN chmod +x ./sfmc_api
 
 EXPOSE 8080
 

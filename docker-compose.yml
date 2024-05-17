@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  sfmc_api:
+    build:
+      context: .
+      dockerfile: cmd/soap_to_rest_sfmc_api/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo_db_api
+
+  mongo_db_api:
+    build:
+      context: .
+      dockerfile: cmd/mongo_db_api/Dockerfile
+    ports:
+      - "8081:8081"
