@@ -1,48 +1,14 @@
-package mongo_db_handlers
+package handlers
 
 import (
-	"fmt"
-	//"context"
-	//"time"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 
-	types "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/types"
-	mongo_db_client "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/mongo_db"
-
-	//"go.mongodb.org/mongo-driver/bson"
-	//"go.mongodb.org/mongo-driver/mongo"
-	//"go.mongodb.org/mongo-driver/mongo/options"
+	client "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/mongo_db/client"
+	models "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/mongo_db/models"
 )
-
-// HttpError structure to represent an HTTP error
-type HttpError struct {
-	Description string `json:"description,omitempty"`
-	Metadata    string `json:"metadata,omitempty"`
-	StatusCode  int    `json:"statusCode"`
-}
-
-// DataExtensionError structure embedding HttpError
-type DataExtensionError struct {
-	*HttpError
-}
-
-// Implementing the error interface for HttpError
-func (e HttpError) Error() string {
-	return fmt.Sprintf("description: %s, metadata: %s", e.Description, e.Metadata)
-}
-
-// CreateNewHttpError creates a new instance of HttpError
-func CreateNewHttpError(description, metadata string, statusCode int) *HttpError {
-	return &HttpError{
-		Description: description,
-		Metadata:    metadata,
-		StatusCode:  statusCode,
-	}
-}
-
 // Handler chains together multiple gin.HandlerFunc
 func Handler(handlers ...gin.HandlerFunc) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -62,7 +28,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		token := c.GetHeader("Authorization")
 		if token == "" {
 			err := &gin.Error{
-				Err:  CreateNewHttpError("Unauthorized", "Missing Authorization Header", http.StatusUnauthorized),
+				Err:  models.CreateNewHttpError("Unauthorized", "Missing Authorization Header", http.StatusUnauthorized),
 				Type: gin.ErrorTypePublic,
 			}
 			c.Errors = append(c.Errors, err)
@@ -73,14 +39,13 @@ func AuthMiddleware() gin.HandlerFunc {
 	}
 }
 
-
 // HeaderHandler checks the Content-Type of the request and adds an error if it's not application/json
 func HeaderHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		requestHeader := c.Request.Header.Get("Content-Type")
 		if requestHeader != "application/json" {
 			err := &gin.Error{
-				Err:  CreateNewHttpError("Unsupported Media Type", "Invalid Content Type", http.StatusUnsupportedMediaType),
+				Err:  models.CreateNewHttpError("Unsupported Media Type", "Invalid Content Type", http.StatusUnsupportedMediaType),
 				Type: gin.ErrorTypePublic,
 			}
 			c.Errors = append(c.Errors, err)
@@ -100,7 +65,7 @@ func ErrorHandler() gin.HandlerFunc {
 			// Handle the first error in the list
 			err := c.Errors[0]
 			switch e := err.Err.(type) {
-			case *HttpError:
+			case *models.HttpError:
 				c.AbortWithStatusJSON(e.StatusCode, e)
 			default:
 				// If the error is not an HttpError, respond with a generic 500 status code
@@ -110,40 +75,48 @@ func ErrorHandler() gin.HandlerFunc {
 	}
 }
 
-
-
 func CreateDataExtension() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		newDataExtension := types.DataExtensionMongoDB{}
+		newDataExtension := models.DataExtensionMongoDB{}
 
 		if err := c.ShouldBindBodyWith(&newDataExtension, binding.JSON); err != nil {
-			c.JSON(400, gin.H{"Error": err.Error()})
+			c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
 			return
 		}
 
-		client, ctx, cancel := mongo_db_client.ConnectDB()
-		defer cancel()
+		// Connexion à la base de données
+		client, ctx, cancel := client.ConnectDB()
+		defer func() {
+			cancel()
+			client.Disconnect(ctx)
+		}()
 
 		collDE := client.Database("sfmcMarouenne").Collection("DataExtension")
 		result, err := collDE.InsertOne(ctx, newDataExtension)
-
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			//c.Next()
+			return
+		}
 
 		collDEFields := client.Database("sfmcMarouenne").Collection("DataExtensionFields")
 		newfields := make([]interface{}, len(newDataExtension.Fields))
-		for i := range newDataExtension.Fields {
-			newfields[i] = newDataExtension.Fields[i]
+		if len(newDataExtension.Fields) > 0 {
+			for i := range newDataExtension.Fields {
+				newfields[i] = newDataExtension.Fields[i]
+			}
+
+			results, err := collDEFields.InsertMany(ctx, newfields)
+
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				return
+			}
+			c.JSON(http.StatusOK, gin.H{"message": "Data extension & related Fields created", "DataExtensionID": result.InsertedID, "DataExtensionFieldsIDs": results.InsertedIDs})
+			return
 		}
 
-		_, err2 := collDEFields.InsertMany(ctx,newfields)
-
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			c.Next() // Continue to the next middleware/handler if the header is correct
-		}
-		if err2 != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			c.Next() // Continue to the next middleware/handler if the header is correct
-		}
 		c.JSON(http.StatusOK, gin.H{"message": "Data extension created", "insertedID": result.InsertedID})
-	}	
+		return
+	}
 }

@@ -1,45 +1,18 @@
-package soap_to_rest_sfmc
+package services
 
 import (
 	"context"
 	"encoding/xml"
 
-	types "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/types"
-	//"fmt"
-	//"log"
-	//"net/http"
-	//"github.com/gin-gonic/gin"
+	models "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/models"
+	client "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/client"
 )
 
-type RetrieveDEFieldResponseMsg struct {
-	XMLName xml.Name `xml:"http://exacttarget.com/wsdl/partnerAPI RetrieveResponseMsg"`
-
-	OverallStatus string `xml:"OverallStatus,omitempty"`
-
-	RequestID string `xml:"RequestID,omitempty"`
-
-	Results []*RetrieveDEFieldResponseMsgAPIOBJECT `xml:"Results,omitempty"`
-}
-
-type RetrieveDEFieldResponseMsgAPIOBJECT struct {
-	*PropertyDefinition
-
-	Ordinal int32 `json:"ordinal,omitempty"`
-
-	IsPrimaryKey bool `json:"isPrimaryKey,omitempty"`
-
-	FieldType *DataExtensionFieldType `json:"fieldType,omitempty"`
-
-	DataExtension *DataExtension `json:"dataExtension,omitempty"`
-
-	StorageType *DataExtensionFieldStorageType `json:"storageType,omitempty"`
-}
-
-func RetrieveDataExtensionFields(ctx context.Context) (*RetrieveDEFieldResponseMsg, error) {
+func RetrieveDataExtensionFields(ctx context.Context) (*models.RetrieveDEFieldResponseMsg, error) {
 
 	// Construct a RetrieveRequestMsg according to the SFMC API requirements
-	retrieveRequest := &RetrieveRequestMsg{
-		RetrieveRequest: &RetrieveRequest{
+	retrieveRequest := &models.RetrieveRequestMsg{
+		RetrieveRequest: &models.RetrieveRequest{
 			ObjectType: "DataExtensionField", // Assuming you want to retrieve subscriber data
 			Properties: []string{
 				"ObjectID", "PartnerKey", "CustomerKey", "Name", "DefaultValue",
@@ -61,10 +34,10 @@ func RetrieveDataExtensionFields(ctx context.Context) (*RetrieveDEFieldResponseM
 
 	// Set up your request
 	// Call the Retrieve method and handle the response
-	sfmcClient := NewSfmcAuthClient()
+	sfmcClient := client.NewSfmcAuthClient()
 
 	var err error
-	var response *RetrieveDEFieldResponseMsg
+	var response *models.RetrieveDEFieldResponseMsg
 	// Call the Retrieve method and handle the response
 	response, err = sfmcClient.RetrieveDataExtensionFields(retrieveRequest)
 
@@ -75,10 +48,10 @@ func RetrieveDataExtensionFields(ctx context.Context) (*RetrieveDEFieldResponseM
 	return response, nil
 }
 
-func RetrieveDataExtensionFieldsByDataExtensionCustomerKey(ctx context.Context, dataExtensionCustomerKey types.DataExtensionRequest) (*RetrieveDEFieldResponseMsg, error) {
+func RetrieveDataExtensionFieldsByDataExtensionCustomerKey(ctx context.Context, dataExtensionCustomerKey models.DataExtensionRequest) (*models.RetrieveDEFieldResponseMsg, error) {
 	// Construct a RetrieveRequestMsg according to the SFMC API requirements
-	retrieveRequest := &RetrieveRequestMsg{
-		RetrieveRequest: &RetrieveRequest{
+	retrieveRequest := &models.RetrieveRequestMsg{
+		RetrieveRequest: &models.RetrieveRequest{
 			ObjectType: "DataExtensionField", // Assuming you want to retrieve subscriber data
 			Properties: []string{
 				"ObjectID", "PartnerKey", "CustomerKey", "Name", "DefaultValue",
@@ -87,7 +60,7 @@ func RetrieveDataExtensionFieldsByDataExtensionCustomerKey(ctx context.Context, 
 				"Client.ID",
 				"DataExtension.CustomerKey",
 			},
-			Filter: &SimpleFilterPart{
+			Filter: &models.SimpleFilterPart{
 				XMLName:        xml.Name{Local: "Filter"},
 				XSIType:        "SimpleFilterPart",
 				Property:       "DataExtension.CustomerKey",
@@ -99,10 +72,10 @@ func RetrieveDataExtensionFieldsByDataExtensionCustomerKey(ctx context.Context, 
 
 	// Set up your request
 	// Call the Retrieve method and handle the response
-	sfmcClient := NewSfmcAuthClient()
+	sfmcClient := client.NewSfmcAuthClient()
 
 	var err error
-	var response *RetrieveDEFieldResponseMsg
+	var response *models.RetrieveDEFieldResponseMsg
 	// Call the Retrieve method and handle the response
 	response, err = sfmcClient.RetrieveDataExtensionFields(retrieveRequest)
 
@@ -115,11 +88,11 @@ func RetrieveDataExtensionFieldsByDataExtensionCustomerKey(ctx context.Context, 
 
 // TO DO
 
-func RetrieveDataExtensionFieldByDataExtensionCustomerKeyAndFieldCustomerKey(ctx context.Context, dataExtensionRequest types.DataExtensionRequest) (*RetrieveDEFieldResponseMsg, error) {
+func RetrieveDataExtensionFieldByDataExtensionCustomerKeyAndFieldCustomerKey(ctx context.Context, dataExtensionRequest models.DataExtensionRequest) (*models.RetrieveDEFieldResponseMsg, error) {
 
 	// Construct a RetrieveRequestMsg according to the SFMC API requirements
-	retrieveRequest := &RetrieveRequestMsg{
-		RetrieveRequest: &RetrieveRequest{
+	retrieveRequest := &models.RetrieveRequestMsg{
+		RetrieveRequest: &models.RetrieveRequest{
 			ObjectType: "DataExtensionField", // Assuming you want to retrieve subscriber data
 			Properties: []string{
 				// essayer de trouver une facon pour mettre aussi automatiquement toutes les propriétés de APIObject struct
@@ -129,18 +102,18 @@ func RetrieveDataExtensionFieldByDataExtensionCustomerKeyAndFieldCustomerKey(ctx
 				"Client.ID",
 				"DataExtension.CustomerKey",
 			},
-			Filter: &ComplexFilterPart{
+			Filter: &models.ComplexFilterPart{
 				XMLName: xml.Name{Local: "Filter"},
 				XSIType: "ComplexFilterPart",
-				LeftOperand: &SimpleFilterPart{
+				LeftOperand: &models.SimpleFilterPart{
 					XMLName:        xml.Name{Space: "http://exacttarget.com/wsdl/partnerAPI", Local: "LeftOperand"},
 					XSIType:        "SimpleFilterPart",
 					Property:       "DataExtension.CustomerKey",
 					SimpleOperator: "equals",
 					Value:          []string{dataExtensionRequest.CustomerKey},
 				},
-				LogicalOperator: LogicalOperatorAND,
-				RightOperand: &SimpleFilterPart{
+				LogicalOperator: models.LogicalOperatorAND,
+				RightOperand: &models.SimpleFilterPart{
 					XMLName:        xml.Name{Space: "http://exacttarget.com/wsdl/partnerAPI", Local: "RightOperand"},
 					XSIType:        "SimpleFilterPart",
 					Property:       "CustomerKey",
@@ -153,10 +126,10 @@ func RetrieveDataExtensionFieldByDataExtensionCustomerKeyAndFieldCustomerKey(ctx
 
 	// Set up your request
 	// Call the Retrieve method and handle the response
-	sfmcClient := NewSfmcAuthClient()
+	sfmcClient := client.NewSfmcAuthClient()
 
 	var err error
-	var response *RetrieveDEFieldResponseMsg
+	var response *models.RetrieveDEFieldResponseMsg
 	// Call the Retrieve method and handle the response
 	response, err = sfmcClient.RetrieveDataExtensionFields(retrieveRequest)
 

@@ -1,14 +1,8 @@
-package soap_to_rest_sfmc
+package models
 
 import (
-	"context"
 	"encoding/xml"
-	"fmt"
 	"time"
-	//"fmt"
-	//"log"
-	//"net/http"
-	//"github.com/gin-gonic/gin"
 )
 
 type RetrieveRecipientResponseMsg struct {
@@ -55,64 +49,4 @@ type RetrieveRecipientResponseMsgAPIOBJECT struct {
 	PrimaryEmailAddress *EmailAddress `xml:"PrimaryEmailAddress,omitempty" json:"primaryEmailAddress,omitempty"`
 
 	Locale *Locale `xml:"Locale,omitempty" json:"locale,omitempty"`
-}
-
-func GetRecipients(ctx context.Context) (*RetrieveRecipientResponseMsg, error) {
-
-	// Construct a RetrieveRequestMsg according to the SFMC API requirements
-	retrieveRequest := &RetrieveRequestMsg{
-		RetrieveRequest: &RetrieveRequest{
-			ObjectType: "Subscriber", // Assuming you want to retrieve subscriber data
-			Properties: []string{
-				"ID", "EmailAddress", "SubscriberKey", "Status", "EmailTypePreference",
-			},
-		},
-	}
-
-	// Set up your request
-	// Call the Retrieve method and handle the response
-	sfmcClient := NewSfmcAuthClient()
-
-	var err error
-	var response *RetrieveRecipientResponseMsg
-	// Call the Retrieve method and handle the response
-	response, err = sfmcClient.RetrieveRecipients(retrieveRequest)
-	fmt.Println(response)
-	if err != nil {
-		return response, err
-	}
-
-	return response, nil
-}
-
-func GetRecipient(ctx context.Context, subscriberKey string) (*RetrieveRecipientResponseMsg, error) {
-	// Assume `NewSfmcAuthClient` creates a client that is authorized to make requests.
-	sfmcClient := NewSfmcAuthClient()
-
-	// Specify the request for retrieving a subscriber
-	retrieveRequest := &RetrieveRequestMsg{
-		RetrieveRequest: &RetrieveRequest{
-			ObjectType: "Subscriber",
-			Properties: []string{
-				"ID", "EmailAddress", "SubscriberKey", "Status", "EmailTypePreference",
-			},
-			Filter: &SimpleFilterPart{
-				XSIType:        "par:SimpleFilterPart",
-				Property:       "SubscriberKey",
-				SimpleOperator: "equals",
-				Value:          []string{subscriberKey},
-			},
-		},
-	}
-	fmt.Println(retrieveRequest.RetrieveRequest)
-
-	var err error
-	var response *RetrieveRecipientResponseMsg
-	// Call the Retrieve method and handle the response
-	response, err = sfmcClient.RetrieveRecipient(retrieveRequest)
-	if err != nil {
-		return response, err
-	}
-
-	return response, nil
 }

@@ -6,10 +6,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	soap_to_rest_sfmc "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc"
-	soap_to_rest_sfmc_handlers "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc_handlers"
-	types "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/types"
-	mongo_db_handlers "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/mongo_db_handlers"
+	models "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/models"
+	services "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/services"
+	handlers "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/handlers"
+
+	//mongo_db_models "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/mongo_db/models"
+	//mongo_db_services "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/mongo_db/services"
+	mongo_db_handlers "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/mongo_db/handlers"
 )
 
 type Server struct {
@@ -22,14 +25,14 @@ func NewServer() *Server {
 
 	router := gin.New()
 	// Utilisation des middlewares
-	router.Use(soap_to_rest_sfmc_handlers.ErrorHandler())
+	router.Use(handlers.ErrorHandler())
 
 	dataExtensionsRoute := router.Group("/DataExtensions")
 	{
 		// Utilisation de Use pour appliquer les middlewares
 		dataExtensionsRoute.Use(
-			//soap_to_rest_sfmc_handlers.HeaderHandler(),
-			soap_to_rest_sfmc_handlers.AuthMiddleware(),
+			//handlers.HeaderHandler(),
+			handlers.AuthMiddleware(),
 		)
 		// Data Extension methods
 		dataExtensionsRoute.POST("/", mongo_db_handlers.CreateDataExtension())
@@ -40,9 +43,9 @@ func NewServer() *Server {
 			ctx := c.Request.Context()
 
 			// Call the original function
-			var result *soap_to_rest_sfmc.RetrieveDEResponseMsg
+			var result *models.RetrieveDEResponseMsg
 			var err error
-			result, err = soap_to_rest_sfmc.RetrieveDataExtensions(ctx)
+			result, err = services.RetrieveDataExtensions(ctx)
 			if err != nil {
 				// Handle error
 				errorResponse(c, err)
@@ -54,7 +57,7 @@ func NewServer() *Server {
 			c.JSON(http.StatusOK, gin.H{"message": result})
 		})
 		dataExtensionsRoute.GET("/:customerKey", func(c *gin.Context) {
-			var dataExtensionRequest = &types.DataExtensionRequest{}
+			var dataExtensionRequest = &models.DataExtensionRequest{}
 			if err := c.ShouldBindUri(dataExtensionRequest); err != nil {
 				c.JSON(400, gin.H{"message": err.Error()})
 				return
@@ -64,9 +67,9 @@ func NewServer() *Server {
 			ctx := c.Request.Context()
 
 			// Call the original function
-			var result *soap_to_rest_sfmc.RetrieveDEResponseMsg
+			var result *models.RetrieveDEResponseMsg
 			var err error
-			result, err = soap_to_rest_sfmc.RetrieveDataExtensionByCustomerKey(ctx, *dataExtensionRequest)
+			result, err = services.RetrieveDataExtensionByCustomerKey(ctx, *dataExtensionRequest)
 			if err != nil {
 				// Handle error
 				errorResponse(c, err)
@@ -78,7 +81,7 @@ func NewServer() *Server {
 			c.JSON(http.StatusOK, gin.H{"message": result})
 		})
 		dataExtensionsRoute.GET("/:customerKey/DataExtensionFields", func(c *gin.Context) {
-			var dataExtensionRequest = &types.DataExtensionRequest{}
+			var dataExtensionRequest = &models.DataExtensionRequest{}
 			if err := c.ShouldBindUri(&dataExtensionRequest); err != nil {
 				c.JSON(400, gin.H{"message": err.Error()})
 				return
@@ -88,9 +91,9 @@ func NewServer() *Server {
 			ctx := c.Request.Context()
 
 			// Call the original function
-			var result *soap_to_rest_sfmc.RetrieveDEFieldResponseMsg
+			var result *models.RetrieveDEFieldResponseMsg
 			var err error
-			result, err = soap_to_rest_sfmc.RetrieveDataExtensionFieldsByDataExtensionCustomerKey(ctx, *dataExtensionRequest)
+			result, err = services.RetrieveDataExtensionFieldsByDataExtensionCustomerKey(ctx, *dataExtensionRequest)
 			if err != nil {
 				// Handle error
 				errorResponse(c, err)
@@ -102,7 +105,7 @@ func NewServer() *Server {
 			c.JSON(http.StatusOK, gin.H{"message": result})
 		})
 		dataExtensionsRoute.GET("/:customerKey/DataExtensionFields/:dataExtensionFieldsCustomerKey", func(c *gin.Context) {
-			var dataExtensionRequest = &types.DataExtensionRequest{}
+			var dataExtensionRequest = &models.DataExtensionRequest{}
 			if err := c.ShouldBindUri(&dataExtensionRequest); err != nil {
 				c.JSON(400, gin.H{"message": err.Error()})
 				return
@@ -115,9 +118,9 @@ func NewServer() *Server {
 			ctx := c.Request.Context()
 
 			// Call the original function
-			var result *soap_to_rest_sfmc.RetrieveDEFieldResponseMsg
+			var result *models.RetrieveDEFieldResponseMsg
 			var err error
-			result, err = soap_to_rest_sfmc.RetrieveDataExtensionFieldByDataExtensionCustomerKeyAndFieldCustomerKey(ctx, *dataExtensionRequest)
+			result, err = services.RetrieveDataExtensionFieldByDataExtensionCustomerKeyAndFieldCustomerKey(ctx, *dataExtensionRequest)
 			if err != nil {
 				// Handle error
 				errorResponse(c, err)
@@ -131,15 +134,14 @@ func NewServer() *Server {
 	
 	}
 
-	// Wrap the call to soap_to_rest_sfmc.GetRecipients with a function that adapts it to Gin's expected handler signature
 	router.GET("/Describe/:object", func(c *gin.Context) {
 		// Convert *gin.Context to context.Context
 		ctx := c.Request.Context()
 
 		// Call the original function
-		var result *soap_to_rest_sfmc.DefinitionResponseMsg
+		var result *models.DefinitionResponseMsg
 		var err error
-		result, err = soap_to_rest_sfmc.Describe(ctx)
+		result, err = services.Describe(ctx)
 		if err != nil {
 			// Handle error
 			errorResponse(c, err)
@@ -157,9 +159,9 @@ func NewServer() *Server {
 		ctx := c.Request.Context()
 
 		// Call the original function
-		var result *soap_to_rest_sfmc.RetrieveRecipientResponseMsg
+		var result *models.RetrieveRecipientResponseMsg
 		var err error
-		result, err = soap_to_rest_sfmc.GetRecipients(ctx)
+		result, err = services.GetRecipients(ctx)
 		if err != nil {
 			// Handle error
 			errorResponse(c, err)
@@ -189,9 +191,9 @@ func NewServer() *Server {
 		ctx := c.Request.Context()
 
 		// Call the original function
-		var result *soap_to_rest_sfmc.RetrieveRecipientResponseMsg
+		var result *models.RetrieveRecipientResponseMsg
 		var err error
-		result, err = soap_to_rest_sfmc.GetRecipient(ctx, id)
+		result, err = services.GetRecipient(ctx, id)
 		if err != nil {
 			// Handle error
 			errorResponse(c, err)
@@ -209,9 +211,9 @@ func NewServer() *Server {
 		ctx := c.Request.Context()
 
 		// Call the original function
-		var result *soap_to_rest_sfmc.RetrieveDEFieldResponseMsg
+		var result *models.RetrieveDEFieldResponseMsg
 		var err error
-		result, err = soap_to_rest_sfmc.RetrieveDataExtensionFields(ctx)
+		result, err = services.RetrieveDataExtensionFields(ctx)
 		if err != nil {
 			// Handle error
 			errorResponse(c, err)
@@ -230,9 +232,9 @@ func NewServer() *Server {
 		ctx := c.Request.Context()
 
 		// Call the original function
-		var result *soap_to_rest_sfmc.RetrieveDataExtensionObjectResponseMsg
+		var result *models.RetrieveDataExtensionObjectResponseMsg
 		var err error
-		result, err = soap_to_rest_sfmc.RetrieveDataExtensionObject(ctx)
+		result, err = services.RetrieveDataExtensionObject(ctx)
 		if err != nil {
 			// Handle error
 			errorResponse(c, err)

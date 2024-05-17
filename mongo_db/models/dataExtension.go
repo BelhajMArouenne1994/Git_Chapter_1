@@ -1,29 +1,44 @@
-package types
+package models
 
 import (
+	"fmt"
 	"time"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// Define soap_to_rest_sfmc Types
-type DataExtensionRequest struct {
-	//ID          string `uri:"id" binding:"required,uuid"`
-	CustomerKey                   string `uri:"customerKey"`                    //binding:"required
-	DataExtensionFieldCustomerKey string `uri:"dataExtensionFieldsCustomerKey"` //binding:"required
+// HttpError structure to represent an HTTP error
+type HttpError struct {
+	Description string `json:"description,omitempty"`
+	Metadata    string `json:"metadata,omitempty"`
+	StatusCode  int    `json:"statusCode"`
 }
 
-type DataExtensionFieldsRequest struct {
-	//ID          string `uri:"id" binding:"required,uuid"`
-	CustomerKey                   string `uri:"customerKey"`                    //binding:"required
-	DataExtensionFieldCustomerKey string `uri:"dataExtensionFieldsCustomerKey"` //binding:"required
+// DataExtensionError structure embedding HttpError
+type DataExtensionError struct {
+	*HttpError
 }
 
-// Define mongo_db Types
+// Implementing the error interface for HttpError
+func (e HttpError) Error() string {
+	return fmt.Sprintf("description: %s, metadata: %s", e.Description, e.Metadata)
+}
+
+// CreateNewHttpError creates a new instance of HttpError
+func CreateNewHttpError(description, metadata string, statusCode int) *HttpError {
+	return &HttpError{
+		Description: description,
+		Metadata:    metadata,
+		StatusCode:  statusCode,
+	}
+}
+
+
+
+// MongoDB structs
 type DataExtensionMongoDB struct {
 	ID                         primitive.ObjectID          `bson:"_id,omitempty" json:"_id,omitempty"`
 	ObjectID                   string                      `bson:"objectId" json:"objectId" binding:"required"`
-	Client                     Client                      `bson:"client" json:"client"`
+	Client                     ClientnMongoDB                      `bson:"client" json:"client"`
 	CreatedDate                time.Time                   `bson:"createdDate" json:"createdDate" binding:"required"`
 	ModifiedDate               time.Time                   `bson:"modifiedDate" json:"modifiedDate"`
 	CustomerKey                string                      `bson:"customerKey" json:"customerKey" binding:"required"`

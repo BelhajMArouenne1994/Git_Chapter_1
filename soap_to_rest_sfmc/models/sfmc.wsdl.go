@@ -1,4 +1,4 @@
-package soap_to_rest_sfmc
+package models
 
 import (
 	"encoding/xml"

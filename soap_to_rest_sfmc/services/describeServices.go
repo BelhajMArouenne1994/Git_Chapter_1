@@ -1,7 +1,11 @@
-package soap_to_rest_sfmc
+package services
 
 import (
 	"context"
+	
+	models "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/models"
+	client "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/client"
+
 	//"encoding/xml"
 	//"fmt"
 	//"log"
@@ -26,11 +30,11 @@ import (
 		ObjectType string `xml:"ObjectType,omitempty"`
 	}
 */
-func Describe(ctx context.Context) (*DefinitionResponseMsg, error) {
+func Describe(ctx context.Context) (*models.DefinitionResponseMsg, error) {
 
-	describeRequest := &DefinitionRequestMsg{
-		DescribeRequests: &ArrayOfObjectDefinitionRequest{
-			ObjectDefinitionRequest: []*ObjectDefinitionRequest{
+	describeRequest := &models.DefinitionRequestMsg{
+		DescribeRequests: &models.ArrayOfObjectDefinitionRequest{
+			ObjectDefinitionRequest: []*models.ObjectDefinitionRequest{
 				{
 					//Client:     &ClientID{ClientID: 12345}, // Example client ID
 					ObjectType: "DataExtensionField",
@@ -41,10 +45,10 @@ func Describe(ctx context.Context) (*DefinitionResponseMsg, error) {
 
 	// Set up your request
 	// Call the Retrieve method and handle the response
-	sfmcClient := NewSfmcAuthClient()
+	sfmcClient := client.NewSfmcAuthClient()
 
 	var err error
-	var response *DefinitionResponseMsg
+	var response *models.DefinitionResponseMsg
 	// Call the Retrieve method and handle the response
 	response, err = sfmcClient.Describe(describeRequest)
 

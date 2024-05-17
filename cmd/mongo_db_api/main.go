@@ -6,11 +6,10 @@ import (
     //"github.com/gorilla/mux"
     "github.com/gin-gonic/gin"
 
-
-    mongo_db "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/mongo_db"
-
-	
-    handlers "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/mongo_db_handlers"
+    client "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/mongo_db/client"
+    //models "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/mongo_db/models"
+	//services "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/mongo_db/services"
+	handlers "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/mongo_db/handlers"
 )
 
 type Server struct {
@@ -19,7 +18,7 @@ type Server struct {
 
 func NewServer() *Server {
     // Connexion à la base de données
-    client, ctx, cancel := mongo_db.ConnectDB()
+    client, ctx, cancel := client.ConnectDB()
     defer cancel()
     defer client.Disconnect(ctx)
 
