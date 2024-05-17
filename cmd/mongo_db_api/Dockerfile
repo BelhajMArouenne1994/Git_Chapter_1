@@ -33,7 +33,7 @@ RUN ls -l /root
 # Ajouter les permissions d'exécution au binaire
 RUN chmod +x ./mongo_db_api
 
-RUN ls -l /root
+RUN ls -l ./
 
 EXPOSE 8081
 
