@@ -6,8 +6,8 @@ import (
 
 	//util "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/util"
 	//types "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/types"
-	//gosoap "github.com/hooklift/gowsdl/soap"
-	gosoap  "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/util" //for debugging
+	gosoap "github.com/hooklift/gowsdl/soap"
+	//gosoap  "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/util" //for debugging
 )
 
 // against "unused imports"
