@@ -9,8 +9,8 @@ import (
 	"time"
 
 	util "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/util"
-	gosoap "github.com/hooklift/gowsdl/soap"
-	//gosoap "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/util"
+	//gosoap "github.com/hooklift/gowsdl/soap"
+	gosoap "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/util"
 )
 
 // Assuming the previously shared structs and types...

@@ -6,8 +6,8 @@ import (
 
 	//util "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/util"
 	//types "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/types"
-	gosoap "github.com/hooklift/gowsdl/soap"
-	//gosoap  "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/util" //for debugging
+	//gosoap "github.com/hooklift/gowsdl/soap"
+	gosoap  "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/util" //for debugging
 )
 
 // against "unused imports"
@@ -3604,7 +3604,7 @@ type ReportActivity struct {
 	*InteractionDefinition
 }
 
-type DataExtension struct {
+type DataExtension_OLD struct {
 	*APIObject
 
 	ObjectID string `xml:"ObjectID,omitempty" json:"objectId,omitempty"`
@@ -4840,9 +4840,11 @@ type Soap interface {
 
 	// Data Extensions
 	RetrieveDataExtensions(request *RetrieveRequestMsg) (*RetrieveDEResponseMsg, error)
-	//RetrieveDataExtensionByCustomerKey(request *RetrieveRequestMsg, dataExtensionCustomerKey types.DataExtensionRequest) (*RetrieveDEResponseMsg, error)
+	CreateDataExtension(request *CreateDataExtensionRequest) (*CreateDataExtensionResponse, error)
+
+	//RetrieveDataExtensionByCustomerKey(request *RetrieveRequestMsg, dataExtensionCustomerKey types.DataExtensionUriRequest) (*RetrieveDEResponseMsg, error)
 	RetrieveDataExtensionByCustomerKey(request *RetrieveRequestMsg) (*RetrieveDEResponseMsg, error)
-	//RetrieveDataExtensionFieldsByDataExtensionCustomerKey(request *RetrieveRequestMsg, dataExtensionCustomerKey types.DataExtensionRequest) (*RetrieveDEResponseMsg, error)
+	//RetrieveDataExtensionFieldsByDataExtensionCustomerKey(request *RetrieveRequestMsg, dataExtensionCustomerKey types.DataExtensionUriRequest) (*RetrieveDEResponseMsg, error)
 	RetrieveDataExtensionFieldsByDataExtensionCustomerKey(request *RetrieveRequestMsg) (*RetrieveDEFieldResponseMsg, error)
 
 	RetrieveDataExtensionFields(request *RetrieveRequestMsg) (*RetrieveDEFieldResponseMsg, error)
@@ -4937,10 +4939,20 @@ func (service *soap) RetrieveDataExtensions(request *RetrieveRequestMsg) (*Retri
 	return response, nil
 }
 
-// func (service *soap) RetrieveDataExtensionByCustomerKey(request *RetrieveRequestMsg, dataExtensionCustomerKey types.DataExtensionRequest) (*RetrieveDEResponseMsg, error) {
+// func (service *soap) RetrieveDataExtensionByCustomerKey(request *RetrieveRequestMsg, dataExtensionCustomerKey types.DataExtensionUriRequest) (*RetrieveDEResponseMsg, error) {
 func (service *soap) RetrieveDataExtensionByCustomerKey(request *RetrieveRequestMsg) (*RetrieveDEResponseMsg, error) {
 	response := new(RetrieveDEResponseMsg)
 	err := service.client.Call("Retrieve", request, response)
+	if err != nil {
+		return nil, err
+	}
+
+	return response, nil
+}
+
+func (service *soap) CreateDataExtension(request *CreateDataExtensionRequest) (*CreateDataExtensionResponse, error) {
+	response := new(CreateDataExtensionResponse)
+	err := service.client.Call("Create", request, response)
 	if err != nil {
 		return nil, err
 	}
@@ -4958,7 +4970,7 @@ func (service *soap) RetrieveDataExtensionFields(request *RetrieveRequestMsg) (*
 	return response, nil
 }
 
-// func (service *soap) RetrieveDataExtensionFieldsByDataExtensionCustomerKey(request *RetrieveRequestMsg, dataExtensionCustomerKey types.DataExtensionRequest) (*RetrieveDEFieldResponseMsg, error) {
+// func (service *soap) RetrieveDataExtensionFieldsByDataExtensionCustomerKey(request *RetrieveRequestMsg, dataExtensionCustomerKey types.DataExtensionUriRequest) (*RetrieveDEFieldResponseMsg, error) {
 func (service *soap) RetrieveDataExtensionFieldsByDataExtensionCustomerKey(request *RetrieveRequestMsg) (*RetrieveDEFieldResponseMsg, error) {
 	response := new(RetrieveDEFieldResponseMsg)
 	err := service.client.Call("Retrieve", request, response)

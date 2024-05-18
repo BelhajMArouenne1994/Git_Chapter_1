@@ -5,9 +5,9 @@ import (
 	//"log"
 	"time"
 
-	gosoap "github.com/hooklift/gowsdl/soap"
+	//gosoap "github.com/hooklift/gowsdl/soap"
 	models  "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/models"
-	//gosoap "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/util"
+	gosoap "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/util"
 )
 
 const (

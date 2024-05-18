@@ -2,9 +2,10 @@ package services
 
 import (
 	"context"
+	"encoding/xml"
 
-	models "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/models"
 	client "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/client"
+	models "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/models"
 )
 
 func RetrieveDataExtensions(ctx context.Context, optionalArgs ...string) (*models.RetrieveDEResponseMsg, error) {
@@ -53,7 +54,7 @@ func RetrieveDataExtensions(ctx context.Context, optionalArgs ...string) (*model
 	return response, nil
 }
 
-func RetrieveDataExtensionByCustomerKey(ctx context.Context, dataExtensionCustomerKey models.DataExtensionRequest) (*models.RetrieveDEResponseMsg, error) {
+func RetrieveDataExtensionByCustomerKey(ctx context.Context, dataExtensionCustomerKey models.DataExtensionUriRequest) (*models.RetrieveDEResponseMsg, error) {
 
 	// Construct a RetrieveRequestMsg according to the SFMC API requirements
 	retrieveRequest := &models.RetrieveRequestMsg{
@@ -72,14 +73,15 @@ func RetrieveDataExtensionByCustomerKey(ctx context.Context, dataExtensionCustom
 				"DataRetentionPeriod",
 			},
 			Filter: &models.SimpleFilterPart{
-				XSIType:        "SimpleFilterPart",
+				XMLName:        xml.Name{Local: "Filter"},
+				XSIType:        "SimpleFilterPart",				
 				Property:       "CustomerKey",
 				SimpleOperator: "equals",
 				Value:          []string{dataExtensionCustomerKey.CustomerKey},
 			},
 		},
 	}
-
+	
 	// Set up your request
 	// Call the Retrieve method and handle the response
 	sfmcClient := client.NewSfmcAuthClient()
@@ -96,4 +98,19 @@ func RetrieveDataExtensionByCustomerKey(ctx context.Context, dataExtensionCustom
 	return response, nil
 }
 
+func CreateDataExtension(ctx context.Context, dataExtension *models.CreateDataExtensionRequest) (*models.CreateDataExtensionResponse, error) {
+	// Set up your request
+	// Call the Retrieve method and handle the response
+	sfmcClient := client.NewSfmcAuthClient()
 
+	var err error
+	var response *models.CreateDataExtensionResponse
+	// Call the Retrieve method and handle the response
+	response, err = sfmcClient.CreateDataExtension(dataExtension)
+
+	if err != nil {
+		return response, err
+	}
+
+	return response, nil
+}

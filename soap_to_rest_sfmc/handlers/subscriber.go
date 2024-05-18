@@ -6,14 +6,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-
 	"github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/models"
 	"github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/services"
 )
 
 func GetSubscriberByIDHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var dataExtensionRequest models.DataExtensionRequest
+		var dataExtensionRequest models.DataExtensionUriRequest
 		if err := c.ShouldBindUri(&dataExtensionRequest); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			return
@@ -40,7 +39,7 @@ func GetSubscriberByIDHandler() gin.HandlerFunc {
 
 func GetSubscribersHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var dataExtensionRequest models.DataExtensionRequest
+		var dataExtensionRequest models.DataExtensionUriRequest
 		if err := c.ShouldBindUri(&dataExtensionRequest); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			return

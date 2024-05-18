@@ -1,11 +1,12 @@
 package handlers
 
 import (
+	"context"
+	"encoding/xml"
 	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-
 
 	"github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/models"
 	"github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/services"
@@ -41,7 +42,6 @@ func CreateNewHttpError(description, metadata string, statusCode int) *HttpError
 		StatusCode:  statusCode,
 	}
 }
-
 
 // Assuming mongoService is initialized and passed to the handler
 var mongoService *mongo_db_Service.MongoService
@@ -116,7 +116,6 @@ func ErrorHandler() gin.HandlerFunc {
 	}
 }
 
-
 func RetrieveDataExtensionsHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx := c.Request.Context()
@@ -140,7 +139,7 @@ func RetrieveDataExtensionsHandler() gin.HandlerFunc {
 
 func RetrieveDataExtensionByCustomerKeyHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var dataExtensionRequest models.DataExtensionRequest
+		var dataExtensionRequest models.DataExtensionUriRequest
 		if err := c.ShouldBindUri(&dataExtensionRequest); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			return
@@ -167,53 +166,59 @@ func RetrieveDataExtensionByCustomerKeyHandler() gin.HandlerFunc {
 			c.Errors = append(c.Errors, err)
 			c.Abort() // Abort the context if the header is not application/json			return
 		}
-	
-        // Store the transformed data in MongoDB
-        for _, data := range transformedData {
-            result, err := mongoService.StoreDataExtension(ctx, data)
-            if err != nil {
+
+		// Store the transformed data in MongoDB
+		for _, data := range transformedData {
+			result, err := mongoService.StoreDataExtension(ctx, data)
+			if err != nil {
 				err := &gin.Error{
 					Err:  CreateNewHttpError(err.Error(), err.Error(), 400),
 					Type: gin.ErrorTypePublic,
 				}
 				c.Errors = append(c.Errors, err)
 				c.Abort() // Abort the context if the header is not application/json			return
-            }
+			}
 			c.JSON(http.StatusOK, gin.H{"message": result.InsertedID})
-        }
+		}
 	}
 }
 
 func CreateDataExtensionHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var dataExtensionRequest models.DataExtensionRequest
-		if err := c.ShouldBindUri(&dataExtensionRequest); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		//var request models.CreateDataExtensionRequest
+		var requestBody models.DataExtensionCreate
+	
+		 
+		// Lier le corps de la requête JSON à la structure Go
+		if err := c.ShouldBindJSON(&requestBody); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
+	
+		requestBody.XSIType = "DataExtension"
 
-		ctx := c.Request.Context()
-
-		result, err := services.RetrieveDataExtensionByCustomerKey(ctx, dataExtensionRequest)
-		if err != nil {
-			err := &gin.Error{
-				Err:  CreateNewHttpError(err.Error(), err.Error(), 400),
-				Type: gin.ErrorTypePublic,
-			}
-			c.Errors = append(c.Errors, err)
-			c.Abort() // Abort the context if the header is not application/json			return
+		request := &models.CreateDataExtensionRequest{
+			XMLName: xml.Name{Local: "CreateRequest"},
+			Options: &models.CreateOptions{},
+			Objects: &requestBody,
 		}
 
-		// You can now call MongoDB service to store the retrieved data
-		// mongoService.StoreDataExtensionByCustomerKey(result)
 
-		c.JSON(http.StatusOK, gin.H{"message": result})
+		// Appeler le service pour créer la Data Extension dans SFMC
+		response, err := services.CreateDataExtension(context.Background(), request)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	
+		// Retourner la réponse au client
+		c.JSON(http.StatusOK, response)
 	}
 }
 
 func RetrieveDataExtensionFieldByCustomerKeyAndFieldKeyHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var dataExtensionRequest models.DataExtensionRequest
+		var dataExtensionRequest models.DataExtensionUriRequest
 		if err := c.ShouldBindUri(&dataExtensionRequest); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			return

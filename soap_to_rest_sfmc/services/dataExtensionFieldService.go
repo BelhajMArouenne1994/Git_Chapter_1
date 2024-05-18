@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/xml"
 
-	models "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/models"
 	client "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/client"
+	models "github.com/BelhajMArouenne1994/GIT_CHAPTER_1/soap_to_rest_sfmc/models"
 )
 
 func RetrieveDataExtensionFields(ctx context.Context) (*models.RetrieveDEFieldResponseMsg, error) {
@@ -48,7 +48,7 @@ func RetrieveDataExtensionFields(ctx context.Context) (*models.RetrieveDEFieldRe
 	return response, nil
 }
 
-func RetrieveDataExtensionFieldsByDataExtensionCustomerKey(ctx context.Context, dataExtensionCustomerKey models.DataExtensionRequest) (*models.RetrieveDEFieldResponseMsg, error) {
+func RetrieveDataExtensionFieldsByDataExtensionCustomerKey(ctx context.Context, dataExtensionCustomerKey models.DataExtensionUriRequest) (*models.RetrieveDEFieldResponseMsg, error) {
 	// Construct a RetrieveRequestMsg according to the SFMC API requirements
 	retrieveRequest := &models.RetrieveRequestMsg{
 		RetrieveRequest: &models.RetrieveRequest{
@@ -88,7 +88,7 @@ func RetrieveDataExtensionFieldsByDataExtensionCustomerKey(ctx context.Context, 
 
 // TO DO
 
-func RetrieveDataExtensionFieldByDataExtensionCustomerKeyAndFieldCustomerKey(ctx context.Context, dataExtensionRequest models.DataExtensionRequest) (*models.RetrieveDEFieldResponseMsg, error) {
+func RetrieveDataExtensionFieldByDataExtensionCustomerKeyAndFieldCustomerKey(ctx context.Context, dataExtensionRequest models.DataExtensionUriRequest) (*models.RetrieveDEFieldResponseMsg, error) {
 
 	// Construct a RetrieveRequestMsg according to the SFMC API requirements
 	retrieveRequest := &models.RetrieveRequestMsg{
@@ -139,4 +139,3 @@ func RetrieveDataExtensionFieldByDataExtensionCustomerKeyAndFieldCustomerKey(ctx
 
 	return response, nil
 }
-
